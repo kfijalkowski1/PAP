@@ -18,4 +18,9 @@ The project idea is to create a student-friendly platform for exchanging terms o
 - see your updated plan
 - automatic email communication between users
 - automatic email communication between the user and the professor
-- automatic recommended exchanges 
+- automatic recommended exchanges
+
+## Technologies
+- Java
+- Oracle DB
+- Vuejs
