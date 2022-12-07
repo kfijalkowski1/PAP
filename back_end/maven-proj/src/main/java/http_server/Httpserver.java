@@ -26,21 +26,8 @@ public class Httpserver {
         // localhost:8000/home//?path="test.html"
     }
 
-    @WebServlet("/hello")
-    static class GreetingServlet extends HttpServlet {
-        @Override
-        public void doPost(HttpServletRequest request, HttpServletResponse response)
-                throws IOException {
-            System.out.println("POST");
-            String name = request.getParameter("name");
-
-            response.getWriter().println("<h1>Hello " + name + "!</h1>");
-        }
-    }
-
     static class Handler implements HttpHandler {
         public void handle(HttpExchange t) throws IOException {
-
             if ("GET".equals(t.getRequestMethod())) {
                 handleGetRequest(t);
             } else if ("POST".equals(t.getRequestMethod())) {
@@ -48,8 +35,21 @@ public class Httpserver {
             }
         }
 
-        public void handlePostRequest(HttpExchange t) {
+
+        public void handlePostRequest(HttpExchange t) throws IOException {
             // endpoints
+            System.out.println("INTOO diff POST");
+            InputStreamReader isr =  new InputStreamReader(t.getRequestBody(),"utf-8");
+            BufferedReader br = new BufferedReader(isr);
+
+            int b;
+            StringBuilder buf = new StringBuilder(512);
+            while ((b = br.read()) != -1) {
+                buf.append((char) b);
+            }
+            System.out.println(buf);
+            br.close();
+            isr.close();
 
         }
         public void handleGetRequest(HttpExchange t) throws IOException {
@@ -98,68 +98,14 @@ public class Httpserver {
 //    }
 
 }
-
-//    static class Handler implements HttpHandler {
-//        @Override
-//        public void handle(HttpExchange httpExchange) throws IOException {
-//            String requestParamValue = null;
-//            if("GET".equals(httpExchange.getRequestMethod())) {
-//                requestParamValue = handleGetRequest(httpExchange);
+//        @WebServlet("/hello")
+//        static class GreetingServlet extends HttpServlet {
+//            @Override
+//            public void doPost(HttpServletRequest request, HttpServletResponse response)
+//                    throws IOException {
+//                System.out.println("POST");
+//                String name = request.getParameter("name");
+//
+//                response.getWriter().println("<h1>Hello " + name + "!</h1>");
 //            }
-////            else if("POST".equals(httpExchange)) {
-////                requestParamValue = handlePostRequest(httpExchange);
-////            }
-//            handleResponse(httpExchange, requestParamValue);
 //        }
-//        private String handleGetRequest(HttpExchange httpExchange) {
-//            System.out.println(httpExchange.getRequestURI().toString().split("\\?")[1].split("=")[1]);
-//            return httpExchange.getRequestURI().toString().split("\\?")[1].split("=")[1];
-//        }
-//        private void handleResponse(HttpExchange httpExchange, String requestParamValue) throws IOException {
-//            OutputStream outputStream = httpExchange.getResponseBody();
-//            StringBuilder htmlBuilder = new StringBuilder();
-//            try {
-//                File myObj = new File(requestParamValue);
-//                Scanner myReader = new Scanner(myObj);
-//                while (myReader.hasNextLine()) {
-//                    String data = myReader.nextLine();
-//                    System.out.println(data);
-//                    htmlBuilder.append(data);
-//                }
-//                myReader.close();
-//            } catch (FileNotFoundException e) {
-//                System.out.println("An error occurred.");
-//                e.printStackTrace(); }
-//
-//
-//
-////            htmlBuilder.append("<html>").
-////            append("<body>").
-////            append("<h1>").
-////            append("Hello ")
-////                    .append(requestParamValue)
-////                    .append("</h1>")
-////                    .append("</body>")
-////                    .append("</html>");
-//
-//            // encode HTML content
-//            String htmlResponse = StringEscapeUtils.escapeHtml4(htmlBuilder.toString());
-//
-//            // this line is a must
-//            httpExchange.sendResponseHeaders(200, htmlResponse.length());
-//            outputStream.write(htmlResponse.getBytes());
-//            outputStream.flush();
-//            outputStream.close();
-//        }
-//    }
-////    static class Handler implements HttpHandler {
-////        @Override
-////        public void handle(HttpExchange t) throws IOException {
-////            String response = "Test response";
-////            t.sendResponseHeaders(200, response.length());
-////            OutputStream os = t.getResponseBody();
-////            os.write(response.getBytes());
-////            os.close();
-////        }
-////    }
-//}
