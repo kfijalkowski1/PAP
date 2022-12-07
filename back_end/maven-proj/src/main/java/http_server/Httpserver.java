@@ -6,6 +6,9 @@ import com.sun.net.httpserver.HttpHandler;
 
 import java.io.*;
 import java.net.URI;
+import javax.servlet.http.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.ServletException;
 import java.util.Scanner; // Import the Scanner class to read text files
 
 
@@ -23,6 +26,18 @@ public class Httpserver {
         // localhost:8000/home//?path="test.html"
     }
 
+    @WebServlet("/hello")
+    static class GreetingServlet extends HttpServlet {
+        @Override
+        public void doPost(HttpServletRequest request, HttpServletResponse response)
+                throws IOException {
+            System.out.println("POST");
+            String name = request.getParameter("name");
+
+            response.getWriter().println("<h1>Hello " + name + "!</h1>");
+        }
+    }
+
     static class Handler implements HttpHandler {
         public void handle(HttpExchange t) throws IOException {
 
@@ -37,7 +52,7 @@ public class Httpserver {
             // endpoints
 
         }
-        public void handleGetRequest(HttpExchange t) throws IOException{
+        public void handleGetRequest(HttpExchange t) throws IOException {
             String root = "src/main/java/http_server";
             URI uri = t.getRequestURI();
             System.out.println("looking for: " + root + uri.getPath());
@@ -73,6 +88,15 @@ public class Httpserver {
             }
         }
     }
+//    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        PrintWriter out = response.getWriter();
+//
+//        out.println("Wczytanie 3 parametrow z zadania :");
+//        out.println(request.getParameter("parametr1"));
+//        out.println(request.getParameter("parametr2"));
+//        out.println(request.getParameter("parametr3"));
+//    }
+
 }
 
 //    static class Handler implements HttpHandler {
