@@ -1,20 +1,24 @@
 package http_server;
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.*;
+import com.sun.net.httpserver.Filter.Chain;
 
 import java.io.*;
 import java.net.URI;
+
 import javax.servlet.http.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
-import java.util.Scanner; // Import the Scanner class to read text files
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import org.json.*;
 
 
 import java.lang.StringBuilder;
 import java.net.InetSocketAddress;
 import org.apache.commons.text.StringEscapeUtils;
+
+import static java.net.HttpURLConnection.HTTP_OK;
 
 
 public class Httpserver {
@@ -35,11 +39,8 @@ public class Httpserver {
             }
         }
 
-
-        public void handlePostRequest(HttpExchange t) throws IOException {
-            // endpoints
-            System.out.println("INTOO diff POST");
-            InputStreamReader isr =  new InputStreamReader(t.getRequestBody(),"utf-8");
+        public String parseInputRequest(HttpExchange t) throws IOException {
+            InputStreamReader isr =  new InputStreamReader(t.getRequestBody(), StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(isr);
 
             int b;
@@ -47,11 +48,31 @@ public class Httpserver {
             while ((b = br.read()) != -1) {
                 buf.append((char) b);
             }
-            System.out.println(buf);
             br.close();
             isr.close();
-
+            return buf.toString();
         }
+
+        public void handlePostRequest(HttpExchange t) throws IOException {
+            String requestString = parseInputRequest(t);
+            JSONObject request = new JSONObject(requestString);
+
+            String testValue = request.getString("test");
+
+            JSONObject response = new JSONObject();
+            response.put("key", "xddd");
+
+            String responseString = response.toString();
+            t.getResponseHeaders().put("Content-Type", Collections.singletonList("application/json"));
+            t.sendResponseHeaders(HTTP_OK, responseString.length());
+
+            OutputStream os;
+            os = t.getResponseBody();
+            os.write(responseString.getBytes());
+            os.close();
+            t.close();
+        }
+
         public void handleGetRequest(HttpExchange t) throws IOException {
             String root = "src/main/java/http_server";
             URI uri = t.getRequestURI();
