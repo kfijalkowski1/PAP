@@ -1,5 +1,5 @@
 <script setup></script>
 
-<template><div>aaaaaa</div></template>
+<template><div>Welcome to the homepage!</div></template>
 
 <style scoped></style>
