@@ -1,4 +1,4 @@
-const address = 'http://localhost:5000/api/'
+const address = 'http://localhost:8000/'
 
 const throwError = (code, message) => () => {
     throw { code, message }

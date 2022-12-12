@@ -9,7 +9,8 @@ const onAddUser = () => {
     addUser(login.value)
 }
 const onLoadUsers = async () => {
-    users.value = await listUsers()
+    users.value = (await listUsers()).users
+    console.log(users.value)
 }
 </script>
 
@@ -32,9 +33,9 @@ const onLoadUsers = async () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="user in users" :key="user.id">
-                        <td>{{ user.id }}</td>
-                        <td>{{ user.login }}</td>
+                    <tr v-for="user in users" :key="user.user_id">
+                        <td>{{ user.user_id }}</td>
+                        <td>{{ user.name }}</td>
                     </tr>
                 </tbody>
             </v-table>

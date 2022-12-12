@@ -1,5 +1,5 @@
 import { fetchApi } from './fetchApi'
 
 export default async () => {
-    return await fetchApi('listUsers', {})
+    return await fetchApi('users', {})
 }
