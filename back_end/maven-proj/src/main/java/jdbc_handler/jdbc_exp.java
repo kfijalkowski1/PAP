@@ -4,25 +4,28 @@ import java.util.ArrayList;
 
 public class jdbc_exp {
     static final String DB_URL = "jdbc:oracle:thin:@//ora4.ii.pw.edu.pl:1521/pdb1.ii.pw.edu.pl";
-    static final String USER = "kfijalk1";
-    static final String PASS = "kfijalk1";
+    static final String USER = "z27";
+    static final String PASS = "9wdzsz";
+
 
 
     public static void main(String[] args) {
-        // Open a connection
-        String exmp_query = "SELECT * FROM users";
-        String[] columns = {"user_id", "name", "password"};
-        ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
-        try {
-            result = getFromQuery(exmp_query, columns);
-        } catch (SQLException e) {System.out.println("problem");}
+//        String exmp_query = "SELECT * FROM users";
+//        String[] columns = {"user_id", "login", "PASSWD_HASH"};
+//        ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+//        try {
+//            result = getFromQuery(exmp_query, columns);
+//        } catch (SQLException e) {System.out.println("problem");}
+//
+//        for (ArrayList<String> row : result) {
+//            System.out.println("NEXT");
+//            for (String cell : row){
+//                System.out.println(cell);
+//            }
+//        }
 
-        for (ArrayList<String> row : result) {
-            System.out.println("NEXT");
-            for (String cell : row){
-                System.out.println(cell);
-            }
-        }
+
+
     }
     public static ArrayList<ArrayList<String>> getFromQuery(String QUERY, String[] columnLabels) throws SQLException {
         // gets given query from database
@@ -41,6 +44,7 @@ public class jdbc_exp {
             }
             result.add(col_result);
         }
+        conn.close();
         return result;
     }
 
@@ -51,8 +55,15 @@ public class jdbc_exp {
         or updates
         returns number of rows modified
          */
-        Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-        Statement stmt = conn.createStatement();
+        String query1 =  "INSERT INTO test_users (user_id, login, passwd_hash) values (99, 'delete-user','passwd')";
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+        } catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        Connection con = DriverManager.getConnection(DB_URL, USER, PASS);
+        Statement stmt = con.createStatement();
         int count = stmt.executeUpdate(QUERY);
         return count;
     }
