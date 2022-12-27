@@ -43,6 +43,19 @@ public class jdbc_exp {
         }
         return result;
     }
+
+    public static int executeQuery(String QUERY) throws SQLException {
+        /*
+        usable for update, delete and insert
+        puts data in query
+        or updates
+        returns number of rows modified
+         */
+        Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        Statement stmt = conn.createStatement();
+        int count = stmt.executeUpdate(QUERY);
+        return count;
+    }
 }
 
 
