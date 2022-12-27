@@ -60,7 +60,7 @@ public class ApiRequestHandler {
                 break;
             case "/addUser":
                 String value = request.getString("login");
-                String query1 = "INSERT INTO users (user_id, name, password) values (3,'" + value + "','')";
+                String query1 = "INSERT INTO users (user_id, login, passwd_hash) values (3,'" + value + "','')";
                 String[] columns1 = {};
 
                 try {

@@ -1,0 +1,82 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+../.idea
+# Maven gitignore
+/back_end/maven-proj/target/
+/back_end/maven-proj/pom.xml.tag
+/back_end/maven-proj/pom.xml.releaseBackup
+/back_end/maven-proj/pom.xml.versionsBackup
+/back_end/maven-proj/pom.xml.next
+/back_end/maven-proj/release.properties
+/back_end/maven-proj/dependency-reduced-pom.xml
+/back_end/maven-proj/buildNumber.properties
+/back_end/maven-proj/.mvn/timing.properties
+
+# https://github.com/takari/maven-wrapper#usage-without-binary-jar
+/back_end/maven-proj/.mvn/wrapper/maven-wrapper.jar
+
+/back_end/maven-proj/# Eclipse m2e generated files
+/back_end/maven-proj/# Eclipse Core
+/back_end/maven-proj/.project
+/back_end/maven-proj/# JDT-specific (Eclipse Java Development Tools)
+/back_end/maven-proj/.classpath
+
+# intelij gitignore
+# User-specific stuff
+/back_end/maven-proj/.idea/**/workspace.xml
+/back_end/maven-proj/.idea/**/tasks.xml
+/back_end/maven-proj/.idea/**/usage.statistics.xml
+/back_end/maven-proj/.idea/**/dictionaries
+/back_end/maven-proj/.idea/**/shelf
+
+/back_end/maven-proj/# AWS User-specific
+/back_end/maven-proj/.idea/**/aws.xml
+
+# Generated files
+/back_end/maven-proj/.idea/**/contentModel.xml
+
+# Sensitive or high-churn files
+/back_end/maven-proj/.idea/**/dataSources/
+/back_end/maven-proj/.idea/**/dataSources.ids
+/back_end/maven-proj/.idea/**/dataSources.local.xml
+/back_end/maven-proj/.idea/**/sqlDataSources.xml
+/back_end/maven-proj/.idea/**/dynamic.xml
+/back_end/maven-proj/.idea/**/uiDesigner.xml
+/back_end/maven-proj/.idea/**/dbnavigator.xml
+
+# CMake
+/back_end/maven-proj/cmake-build-*/
+
+# Mongo Explorer plugin
+/back_end/maven-proj/.idea/**/mongoSettings.xml
+
+# File-based project format
+/back_end/maven-proj/*.iws
+
+# IntelliJ
+/back_end/maven-proj/out/
+
+# mpeltonen/sbt-idea plugin
+/back_end/maven-proj/.idea_modules/
+
+# JIRA plugin
+/back_end/maven-proj/atlassian-ide-plugin.xml
+
+# Cursive Clojure plugin
+/back_end/maven-proj/.idea/replstate.xml
+
+# SonarLint plugin
+/back_end/maven-proj/.idea/sonarlint/
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+/back_end/maven-proj/com_crashlytics_export_strings.xml
+/back_end/maven-proj/crashlytics.properties
+/back_end/maven-proj/crashlytics-build.properties
+/back_end/maven-proj/fabric.properties
+
+# Editor-based Rest Client
+/back_end/maven-proj/.idea/httpRequests
+
+# Android studio 3.1+ serialized cache file
+/back_end/maven-proj/.idea/caches/build_file_checksums.ser
