@@ -1,0 +1,14 @@
+
+image: maven:latest
+
+stages:
+  - test
+
+test_job:
+  stage: test
+  tags:
+    - docker
+  script:
+    - echo "Maven start tests"
+    - "mvn test"
+
