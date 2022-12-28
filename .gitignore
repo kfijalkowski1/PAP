@@ -80,3 +80,4 @@
 
 # Android studio 3.1+ serialized cache file
 /back_end/maven-proj/.idea/caches/build_file_checksums.ser
+/back_end/maven-proj/logs/*
