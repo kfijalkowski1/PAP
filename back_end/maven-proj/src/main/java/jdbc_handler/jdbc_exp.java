@@ -2,7 +2,7 @@ package jdbc_handler;
 import java.sql.*;
 import java.util.ArrayList;
 
-import loger.logger;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,7 +11,7 @@ public class jdbc_exp {
     static final String DB_URL = "jdbc:oracle:thin:@//ora4.ii.pw.edu.pl:1521/pdb1.ii.pw.edu.pl";
     static final String USER = "z27";
     static final String PASS = "9wdzsz";
-    private static final Logger logger = LogManager.getLogger(loger.logger.class);
+    private static final Logger logger = LogManager.getLogger(jdbc_exp.class);
 
 
 
