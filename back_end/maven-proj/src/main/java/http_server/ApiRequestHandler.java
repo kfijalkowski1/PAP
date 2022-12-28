@@ -1,18 +1,22 @@
 package http_server;
 
+import apiMethodes.addUser;
 import com.sun.net.httpserver.HttpExchange;
-import org.json.JSONArray;
+import apiMethodes.ApiMethodes;
+import apiMethodes.Users;
 import org.json.JSONObject;
 import java.io.*;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import static java.net.HttpURLConnection.HTTP_OK;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import static jdbc_handler.jdbc_exp.getFromQuery;
 
 
 public class ApiRequestHandler {
+    private static final Logger logger = LogManager.getLogger(ApiRequestHandler.class);
     public String parseInputRequest(HttpExchange t) throws IOException {
         StringBuilder requestBuffer = new StringBuilder();
         InputStream is = t.getRequestBody();
@@ -28,49 +32,24 @@ public class ApiRequestHandler {
 
     public void handleRequest(HttpExchange t) throws IOException {
         String uri = t.getRequestURI().getPath();
+        logger.info("Recived uri: " + uri);
 
         String requestString = parseInputRequest(t);
         JSONObject request = new JSONObject(requestString);
 
-//        String testValue = request.getString("test");
-
         JSONObject response = new JSONObject();
+        Map<String, ApiMethodes> methodes = new HashMap<>();
 
-        switch (uri) {
-            case "/users":
-                String query = "SELECT * FROM users";
-                String[] columns = {"user_id", "name"};
-                ArrayList<ArrayList<String>> result;
+        // Add all methods
+        methodes.put("/users", new Users());
+        methodes.put("/addUser", new addUser());
 
-                try {
-                    result = getFromQuery(query, columns);
-                    JSONArray resultUsers = new JSONArray();
-
-                    for (ArrayList<String> record : result) {
-                        JSONObject user = new JSONObject()
-                                .put("user_id", record.get(0))
-                                .put("name", record.get(1));
-                        resultUsers.put(user);
-                    }
-                    response.put("users", resultUsers);
-
-                } catch (SQLException e) {
-                    System.out.println("Problem with database");
-                }
-                break;
-            case "/addUser":
-                String value = request.getString("login");
-                String query1 = "INSERT INTO users (user_id, login, passwd_hash) values (3,'" + value + "','')";
-                String[] columns1 = {};
-
-                try {
-                    getFromQuery(query1, columns1);
-                } catch (SQLException e) {
-                    System.out.println("Problem with database");
-                }
-                break;
-
+        if (methodes.get(uri) != null) {
+            response = methodes.get(uri).run(request);
+        } else {
+            // TODO set response to method not in
         }
+
 
         String responseString = response.toString();
         t.getResponseHeaders().put("Content-Type", Collections.singletonList("application/json"));
