@@ -32,7 +32,7 @@ public class ApiRequestHandler {
 
     public void handleRequest(HttpExchange t) throws IOException {
         String uri = t.getRequestURI().getPath();
-        logger.info("Recived uri: " + uri);
+        logger.info("Received uri: " + uri);
 
         String requestString = parseInputRequest(t);
         JSONObject request = new JSONObject(requestString);
@@ -40,7 +40,7 @@ public class ApiRequestHandler {
         JSONObject response = new JSONObject();
         Map<String, ApiMethodes> methodes = new HashMap<>();
 
-        // Add all methods
+        // Add all methods, TODO move this map somewhere
         methodes.put("/users", new Users());
         methodes.put("/addUser", new addUser());
 
