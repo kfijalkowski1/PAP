@@ -3,19 +3,52 @@ package apiMethodes;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import static jdbc_handler.jdbc_exp.executeQuery;
+import static jdbc_handler.jdbc_exp.getFromQuery;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class loginValid implements ApiMethodes {
-    private static final Logger logger = LogManager.getLogger(Users.class);
+    private static final Logger logger = LogManager.getLogger(loginValid.class);
     public JSONObject run(JSONObject request) {
         String value = request.getString("login");
-        //validate login
-        return new JSONObject();
+
+        JSONObject result = new JSONObject();
+        boolean isValid = true;
+
+        // check login length
+        if (value.length() < 5) {
+            isValid = false;
+        }
+
+        // check if special characters exists in login
+        Pattern p = Pattern.compile(
+                "[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(value);
+        boolean isSpecialChar = m.find();
+        if (isSpecialChar) {
+            isValid = false;
+        }
+
+        // check if login not exists in DB
+        try {
+            String query = "SELECT COUNT(1) as count FROM USERS WHERE login='" + value + "'";
+            String[] columns = {"count"};
+            ArrayList<ArrayList<String>> queryResult = getFromQuery(query, columns);
+            logger.info("Checked number of users: " + queryResult.get(0).get(0));
+            if ("1".equals(queryResult.get(0).get(0))) {
+                isValid = false;
+            }
+        } catch (SQLException e) {
+            isValid = false;
+            result.put("error", true);
+        }
+
+        result.put("result", isValid);
+        return result;
     }
 }

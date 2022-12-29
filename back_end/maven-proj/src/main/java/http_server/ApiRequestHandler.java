@@ -1,6 +1,7 @@
 package http_server;
 
 import apiMethodes.addUser;
+import apiMethodes.loginValid;
 import com.sun.net.httpserver.HttpExchange;
 import apiMethodes.ApiMethodes;
 import apiMethodes.Users;
@@ -43,6 +44,7 @@ public class ApiRequestHandler {
         // Add all methods, TODO move this map somewhere
         methodes.put("/users", new Users());
         methodes.put("/addUser", new addUser());
+        methodes.put("/loginValid", new loginValid());
 
         if (methodes.get(uri) != null) {
             response = methodes.get(uri).run(request);
