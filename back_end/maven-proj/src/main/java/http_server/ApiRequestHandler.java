@@ -1,10 +1,7 @@
 package http_server;
 
-import apiMethodes.addUser;
-import apiMethodes.loginValid;
+import apiMethodes.*;
 import com.sun.net.httpserver.HttpExchange;
-import apiMethodes.ApiMethodes;
-import apiMethodes.Users;
 import org.json.JSONObject;
 import java.io.*;
 import java.util.Collections;
@@ -42,9 +39,12 @@ public class ApiRequestHandler {
         Map<String, ApiMethodes> methodes = new HashMap<>();
 
         // Add all methods, TODO move this map somewhere
+        methodes.put("/checkSessionValid", new checkSessionValid());
         methodes.put("/users", new Users());
         methodes.put("/addUser", new addUser());
         methodes.put("/loginValid", new loginValid());
+        methodes.put("/authenticateUser", new authenticateUser());
+        methodes.put("/changePassword", new changePassword());
 
         if (methodes.get(uri) != null) {
             response = methodes.get(uri).run(request);
