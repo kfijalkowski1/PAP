@@ -27,10 +27,9 @@ public class authenticateUser implements ApiMethodes {
 
         JSONObject result = new JSONObject();
         boolean isValid = false;
-        logger.info("Trying to validate user: " + login);
+        logger.info("Try to validate user: " + login);
         try {
-            //String query = "SELECT passwd_hash FROM USERS WHERE login='" + login + "'";
-            String query = "SELECT passwd_hash FROM USERS";
+            String query = "SELECT passwd_hash FROM USERS WHERE login='" + login + "'";
             String[] columns = {"passwd_hash"};
             ArrayList<ArrayList<String>> queryResult = getFromQuery(query, columns);
             if (validatePassword(password, queryResult.get(0).get(0))) {
