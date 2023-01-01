@@ -1,5 +1,7 @@
-package apiMethodes;
+package http_server;
 
+import apiMethodes.ApiMethodes;
+import apiMethodes.changePassword;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -13,16 +15,17 @@ import static apiMethodes.authenticateUser.getExpirationTime;
 import static jdbc_handler.jdbc_exp.executeQuery;
 import static jdbc_handler.jdbc_exp.getFromQuery;
 
-public class checkSessionValid implements ApiMethodes {
+public class checkSessionValid {
     private static final Logger logger = LogManager.getLogger(changePassword.class);
-    public JSONObject run(JSONObject request) {
+    public static boolean run(JSONObject request) {
+        String login = request.getString("login");
         String token = request.getString("token");
-        JSONObject result = new JSONObject();
-        if (isTokenValid(token)) {
-            result.put("valid", true);
+        boolean result = false;
+        if (isTokenValid(login, token)) {
+            result = true;
 
             String newExpirationTime = getExpirationTime();
-            String query = "UPDATE sessions SET expiration_time='" + newExpirationTime + "' WHERE token='" + token + "'";
+            String query = "UPDATE sessions SET expiration_time='" + newExpirationTime + "' WHERE login='" + login + "'";
             try {
                 executeQuery(query);
                 logger.info("Session updated");
@@ -31,25 +34,31 @@ public class checkSessionValid implements ApiMethodes {
             }
         }
         else {
-            result.put("valid", false);
+            try {
+                String deleteQuery = "DELETE FROM sessions WHERE login='" + login + "'";
+                executeQuery(deleteQuery);
+                logger.info("Session deleted for user: " + login);
+            } catch (SQLException e) {
+                logger.error("Problem with database");
+            }
         }
         return result;
     }
 
-    public static boolean isTokenValid(String token) {
-//        user_id jest do wyjebania, kluczem glownym moglby byc login bo zakladamy ze jest unikatowy
+    public static boolean isTokenValid(String login, String token) {
         try {
-            String query = "SELECT expiration_time FROM SESSIONS WHERE token='" + token + "'";
-            String[] columns = {"expiration_time"};
+            String query = "SELECT expiration_time, token FROM SESSIONS WHERE login='" + login + "'";
+            String[] columns = {"expiration_time, token"};
             ArrayList<ArrayList<String>> queryResult = getFromQuery(query, columns);
-            logger.info("Get expiration time of token for token.");
+            logger.info("Get expiration time of token for login.");
 
             String exp_time = queryResult.get(0).get(0);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             LocalDateTime expiration_time = LocalDateTime.parse(exp_time, formatter);
             LocalDateTime now = LocalDateTime.now();
 
-            if (now.isBefore(expiration_time)) {
+            String trueToken = queryResult.get(0).get(1);
+            if (token.equals(trueToken) && now.isBefore(expiration_time)) {
                 return true;
             }
         } catch (SQLException e) {

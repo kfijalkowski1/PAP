@@ -12,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-
 public class ApiRequestHandler {
     private static final Logger logger = LogManager.getLogger(ApiRequestHandler.class);
     public String parseInputRequest(HttpExchange t) throws IOException {
@@ -39,7 +38,6 @@ public class ApiRequestHandler {
         Map<String, ApiMethodes> methodes = new HashMap<>();
 
         // Add all methods, TODO move this map somewhere
-        methodes.put("/checkSessionValid", new checkSessionValid());
         methodes.put("/users", new Users());
         methodes.put("/addUser", new addUser());
         methodes.put("/loginValid", new loginValid());
@@ -47,12 +45,17 @@ public class ApiRequestHandler {
         methodes.put("/changePassword", new changePassword());
         methodes.put("/addEmail", new addEmail());
 
-        if (methodes.get(uri) != null) {
-            response = methodes.get(uri).run(request);
-        } else {
-            // TODO set response to method not in
+        if (checkSessionValid.run(request) || uri.equals("/authenticateUser") || uri.equals("/addUser") || uri.equals("/loginValid")) {
+            if (methodes.get(uri) != null) {
+                response = methodes.get(uri).run(request);
+            }
+            else {
+                response.put("code", 404);
+            }
         }
-
+        else {
+            response.put("code", 401);
+        }
 
         String responseString = response.toString();
         t.getResponseHeaders().put("Content-Type", Collections.singletonList("application/json"));
