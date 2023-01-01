@@ -45,6 +45,7 @@ public class ApiRequestHandler {
         methodes.put("/loginValid", new loginValid());
         methodes.put("/authenticateUser", new authenticateUser());
         methodes.put("/changePassword", new changePassword());
+        methodes.put("/addEmail", new addEmail());
 
         if (methodes.get(uri) != null) {
             response = methodes.get(uri).run(request);

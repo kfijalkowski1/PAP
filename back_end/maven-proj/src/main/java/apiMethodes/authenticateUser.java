@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 
 import static hashingHandler.PasswordHashing.generateHash;
+import static hashingHandler.PasswordHashing.validatePassword;
 import static jdbc_handler.jdbc_exp.executeQuery;
 import static jdbc_handler.jdbc_exp.getFromQuery;
 
@@ -23,16 +24,16 @@ public class authenticateUser implements ApiMethodes {
     public JSONObject run (JSONObject request) {
         String login = request.getString("login");
         String password = request.getString("password");
-        String hash = generateHash(password);
 
         JSONObject result = new JSONObject();
         boolean isValid = false;
-
+        logger.info("Trying to validate user: " + login);
         try {
-            String query = "SELECT passwd_hash as hash FROM USERS WHERE login='" + login + "'";
-            String[] columns = {"hash"};
+            //String query = "SELECT passwd_hash FROM USERS WHERE login='" + login + "'";
+            String query = "SELECT passwd_hash FROM USERS";
+            String[] columns = {"passwd_hash"};
             ArrayList<ArrayList<String>> queryResult = getFromQuery(query, columns);
-            if (hash.equals(queryResult.get(0).get(0))) {
+            if (validatePassword(password, queryResult.get(0).get(0))) {
                 logger.info("Correct logging for user: " + login);
                 isValid = true;
 

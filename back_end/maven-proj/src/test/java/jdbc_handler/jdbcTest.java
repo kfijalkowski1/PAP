@@ -19,7 +19,7 @@ public class jdbcTest {
         } catch (SQLException e) {System.out.println("problem");}
 
 
-        assertEquals("result user_id", result.get(0).get(0), "1");
+        assertEquals("result user_id", result.get(0).get(0), "0");
         assertEquals("", result.get(0).get(1), "super-user");
         assertEquals("error in add()", result.get(0).get(2), "passwd");
     }

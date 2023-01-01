@@ -21,9 +21,10 @@ public class loginValid implements ApiMethodes {
         boolean isValid = true;
 
         // check login length
-        if (value.length() < 5) {
+        if (value.length() < 5 || value.length() > 15) {
             isValid = false;
         }
+
 
         // check if special characters exists in login
         Pattern p = Pattern.compile(

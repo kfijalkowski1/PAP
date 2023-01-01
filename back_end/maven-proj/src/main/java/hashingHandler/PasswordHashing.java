@@ -73,9 +73,9 @@ public class PasswordHashing {
     }
 
 
-    public static boolean validatePassword(String originalPassword, String storedPassword)
+    public static boolean validatePassword(String originalPassword, String storedHash)
     {
-        String[] parts = storedPassword.split(":");
+        String[] parts = storedHash.split(":");
         int iterations = Integer.parseInt(parts[0]);
 
         byte[] salt = fromHex(parts[1]);
