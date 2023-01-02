@@ -14,6 +14,16 @@ import java.security.spec.KeySpec;
 
 public class PasswordHashing {
     private static final Logger logger = LogManager.getLogger(loginValid.class);
+    private static SecureRandom sr;
+
+    static {
+        try {
+            sr = SecureRandom.getInstance("SHA1PRNG");
+        } catch (NoSuchAlgorithmException e) {
+            logger.error(e);
+        }
+    }
+
     public static void main(String[] args)
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {
@@ -47,12 +57,6 @@ public class PasswordHashing {
 
     private static byte[] getSalt()
     {
-        SecureRandom sr = null;
-        try {
-            sr = SecureRandom.getInstance("SHA1PRNG");
-        } catch (NoSuchAlgorithmException e) {
-            logger.error(e);
-        }
         byte[] salt = new byte[16];
         sr.nextBytes(salt);
         return salt;
