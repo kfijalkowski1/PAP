@@ -1,9 +1,7 @@
 package http_server;
 
-import apiMethodes.addUser;
+import apiMethodes.*;
 import com.sun.net.httpserver.HttpExchange;
-import apiMethodes.ApiMethodes;
-import apiMethodes.Users;
 import org.json.JSONObject;
 import java.io.*;
 import java.util.Collections;
@@ -12,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 
 public class ApiRequestHandler {
@@ -43,13 +40,22 @@ public class ApiRequestHandler {
         // Add all methods, TODO move this map somewhere
         methodes.put("/users", new Users());
         methodes.put("/addUser", new addUser());
+        methodes.put("/loginValid", new loginValid());
+        methodes.put("/authenticateUser", new authenticateUser());
+        methodes.put("/changePassword", new changePassword());
+        methodes.put("/addEmail", new addEmail());
 
-        if (methodes.get(uri) != null) {
-            response = methodes.get(uri).run(request);
-        } else {
-            // TODO set response to method not in
+        if (checkSessionValid.run(request) || uri.equals("/authenticateUser") || uri.equals("/addUser") || uri.equals("/loginValid")) {
+            if (methodes.get(uri) != null) {
+                response = methodes.get(uri).run(request);
+            }
+            else {
+                response.put("code", 404);
+            }
         }
-
+        else {
+            response.put("code", 401);
+        }
 
         String responseString = response.toString();
         t.getResponseHeaders().put("Content-Type", Collections.singletonList("application/json"));
