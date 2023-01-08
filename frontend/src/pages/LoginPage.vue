@@ -1,18 +1,42 @@
 <script setup>
-import { ref } from 'vue'
-import {} from '@/api'
+import { $ref } from 'vue/macros'
+import { addUser, loginValid, authenticateUser } from '@/api'
+import { useAuthStore } from '@/stores'
+import { throwIf, errorCatcher } from '@/utils'
 
-const mode = ref('login')
-const login = ref('')
-const password = ref('')
+const auth = useAuthStore()
 
-const confirmPassword = ref('')
-const email = ref('')
-const firstname = ref('')
-const surname = ref('')
+let mode = $ref('login')
+let login = $ref('')
+let password = $ref('')
 
-const onLogin = () => {}
-const onRegister = () => {}
+let confirmPassword = $ref('')
+let email = $ref('')
+let firstname = $ref('')
+let surname = $ref('')
+
+const validateLogin = errorCatcher(async () => {
+    throwIf(() => login.length < 6, 400, 'Login too short')()
+
+    await loginValid(login)
+})
+
+const onLogin = errorCatcher(async () => {
+    await validateLogin()
+
+    const token = await authenticateUser(login, password)
+    auth.login(login, token)
+})
+
+const onRegister = errorCatcher(async () => {
+    await validateLogin()
+
+    throwIf(() => password !== confirmPassword, 400, 'Password mismatch')()
+
+    await addUser(login, password, firstname, surname, email)
+    mode = 'login'
+    password = ''
+})
 </script>
 
 <template>
@@ -27,12 +51,15 @@ const onRegister = () => {}
                 </div>
                 <v-text-field
                     label="Login"
+                    color="primary"
                     fullWidth
                     variant="filled"
                     v-model="login"
+                    @blur="validateLogin"
                 />
                 <v-text-field
                     label="Password"
+                    color="primary"
                     fullWidth
                     variant="filled"
                     type="password"
@@ -42,6 +69,7 @@ const onRegister = () => {}
                 <v-text-field
                     v-if="mode === 'register'"
                     label="Confirm password"
+                    color="primary"
                     fullWidth
                     variant="filled"
                     type="password"
@@ -51,6 +79,7 @@ const onRegister = () => {}
                     v-if="mode === 'register'"
                     label="Firstname"
                     placeholder="Jan"
+                    color="primary"
                     fullWidth
                     variant="filled"
                     v-model="firstname"
@@ -59,6 +88,7 @@ const onRegister = () => {}
                     v-if="mode === 'register'"
                     label="Surname"
                     placeholder="Przyklad"
+                    color="primary"
                     fullWidth
                     variant="filled"
                     v-model="surname"
@@ -68,6 +98,7 @@ const onRegister = () => {}
                     label="Email"
                     type="email"
                     placeholder="jan.przyklad@gmail.com"
+                    color="primary"
                     fullWidth
                     variant="filled"
                     v-model="email"
