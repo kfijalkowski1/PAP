@@ -5,9 +5,9 @@ export const useAuthStore = defineStore('auth', () => {
     const login = ref(null)
     const token = ref(null)
 
-    const signIn = (login, token) => {
-        login.value = login
-        token.value = token
+    const signIn = (newLogin, newToken) => {
+        login.value = newLogin
+        token.value = newToken
     }
 
     const signOut = () => {

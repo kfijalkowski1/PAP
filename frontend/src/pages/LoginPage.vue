@@ -16,16 +16,15 @@ let firstname = $ref('')
 let surname = $ref('')
 
 const validateLogin = errorCatcher(async () => {
-    throwIf(() => login.length < 6, 400, 'Login too short')()
-
-    await loginValid(login)
+    if (mode === 'register') await loginValid(login)
 })
 
 const onLogin = errorCatcher(async () => {
-    await validateLogin()
-
     const token = await authenticateUser(login, password)
-    auth.login(login, token)
+    auth.signIn(login, token)
+
+    console.log('Login succesful!')
+    console.log(auth.login, auth.token)
 })
 
 const onRegister = errorCatcher(async () => {

@@ -1,5 +1,6 @@
 import { useAuthStore } from '@/stores'
 import { throwError } from '@/utils'
+import router from '@/router'
 
 const address = 'http://localhost:8000/'
 
@@ -29,10 +30,13 @@ const fetchApi = async (endpoint, args) => {
     const data = await res.json().catch(throwError(500, 'JSON Error'))
 
     if (data.code !== 200) {
+        console.error('api error', data)
         if (data.code === 401) {
-            // session expired, logout and redirect to login page
+            console.info('logging out', data)
+            router.push('/')
+            auth.signOut()
         }
-        throw data.error
+        throw data
     }
 
     return data

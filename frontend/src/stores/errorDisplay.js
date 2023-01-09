@@ -8,7 +8,7 @@ export const useErrorDisplayStore = defineStore('errorDisplay', () => {
     const snackbar = computed(() => !!code.value)
 
     const setMessage = (error) => {
-        console.log(error)
+        console.error('caught error:', error)
 
         code.value = error.code
         message.value = error.message
