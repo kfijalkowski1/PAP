@@ -1,18 +1,19 @@
+import { useAuthStore } from '@/stores'
+import { throwError } from '@/utils'
+import router from '@/router'
+
 const address = 'http://localhost:8000/'
 
-const throwError = (code, message) => () => {
-    throw { code, message }
-}
-
-const throwIf = (func, code, message) => (res) => {
-    if (!func(res)) {
-        return res
-    } else {
-        return throwError(code, message)()
-    }
-}
-
 const fetchApi = async (endpoint, args) => {
+    const auth = useAuthStore()
+    let creds = { login: '', token: '' }
+    if (auth.isSignedIn) {
+        creds = {
+            login: auth.login,
+            token: auth.token,
+        }
+    }
+
     const res = await fetch(address + endpoint, {
         method: 'post',
         headers: {
@@ -21,21 +22,24 @@ const fetchApi = async (endpoint, args) => {
         },
 
         body: JSON.stringify({
+            ...creds,
             ...args,
-            // add authorization data
         }),
     }).catch(throwError(500, 'Network Error'))
 
     const data = await res.json().catch(throwError(500, 'JSON Error'))
 
-    if (data.error) {
-        if (data.error.code === 401) {
-            // session expired, logout and redirect to login page
+    if (data.code !== 200) {
+        console.error('api error', data)
+        if (data.code === 401) {
+            console.info('logging out', data)
+            router.push('/')
+            auth.signOut()
         }
-        throw data.error
+        throw data
     }
 
     return data
 }
 
-export { fetchApi, throwIf, throwError }
+export { fetchApi }

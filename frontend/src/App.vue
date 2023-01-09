@@ -1,3 +1,6 @@
+<script setup>
+import ErrorSnackBar from '@/components/ErrorSnackBar.vue'
+</script>
 <template>
     <v-app>
         <v-app-bar color="primary" absolute>
@@ -18,6 +21,7 @@
         </v-navigation-drawer>
         <v-main>
             <router-view />
+            <ErrorSnackBar />
         </v-main>
     </v-app>
 </template>
