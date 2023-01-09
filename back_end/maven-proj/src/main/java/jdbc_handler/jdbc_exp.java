@@ -15,51 +15,78 @@ public class jdbc_exp {
 
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+        String exmp_query = "SELECT ? FROM test_users";
+        String[] args2 = {"*"};
+        Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        PreparedStatement pstmt = conn.prepareStatement(exmp_query);
+        pstmt.setString(0, "*");
+        String[] columns = {"user_id", "login", "PASSWD_HASH"};
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
+        try {
+            result = getFromQuery(exmp_query, args2, columns);
+        } catch (SQLException e) {System.out.println("problem");}
+        System.out.println(result);
 
     }
-    public static ArrayList<ArrayList<String>> getFromQuery(String QUERY, String[] columnLabels) throws SQLException {
+    public static ArrayList<ArrayList<String>> getFromQuery(String QUERY, String[] args, String[] columnLabels) throws SQLException {
         // gets given query from database
         // returns array of arrays of strings in same order as columnLabel
-        logger.info("JDBC (select) received query: " + QUERY);
-        Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(QUERY);
-        logger.info("JDBC (select) executed query");
-        // Extract data from result set
-        ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
-        while (rs.next())
-        {
-            ArrayList<String> col_result = new ArrayList<String>();
-            for (String colLabel : columnLabels)
-            {
-                col_result.add(rs.getString(colLabel));
+        // arg:
+            // Query = "Select login, token from users where id=?"
+        try {
+            logger.info("JDBC (select) received query: " + QUERY + " with args: " + String.join(", ", args));
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            PreparedStatement pstmt = conn.prepareStatement(QUERY);
+            for (int i = 1; i < args.length + 1; i++) {
+                pstmt.setString(i, args[i - 1]);
             }
-            result.add(col_result);
+            ResultSet rs = pstmt.executeQuery();
+            logger.info("JDBC (select) executed query: " + pstmt.toString());
+            // Extract data from result set
+            ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+            while (rs.next()) {
+                ArrayList<String> col_result = new ArrayList<String>();
+                for (String colLabel : columnLabels) {
+                    col_result.add(rs.getString(colLabel));
+                }
+                result.add(col_result);
+            }
+            conn.close();
+            return result;
+        } catch (SQLException e) {
+            logger.error(e);
+            throw e;
         }
-        conn.close();
-        return result;
     }
 
-    public static int executeQuery(String QUERY) throws SQLException {
+    public static int executeQuery(String QUERY, String args[]) throws SQLException {
         /*
         usable for update, delete and insert
         puts data in query
         or updates
         returns number of rows modified
          */
-        logger.info("JDBC (execute) received query: " + QUERY);
         try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-        } catch (Exception e)
-        {
+
+            logger.info("JDBC (execute) received query: " + QUERY + " with args: " + String.join(", ", args));
+            try {
+                Class.forName("oracle.jdbc.driver.OracleDriver");
+            } catch (Exception e) {
+                logger.error(e);
+            }
+            Connection con = DriverManager.getConnection(DB_URL, USER, PASS);
+            PreparedStatement pstmt = con.prepareStatement(QUERY);
+            for (int i = 1; i < args.length + 1; i++) {
+                pstmt.setString(i, args[i - 1]);
+            }
+            int count = pstmt.executeUpdate();
+            logger.info("JDBC (execute) executed query");
+            return count;
+        } catch (SQLException e) {
             logger.error(e);
+            throw e;
         }
-        Connection con = DriverManager.getConnection(DB_URL, USER, PASS);
-        Statement stmt = con.createStatement();
-        int count = stmt.executeUpdate(QUERY);
-        logger.info("JDBC (execute) executed query");
-        return count;
     }
 }
 

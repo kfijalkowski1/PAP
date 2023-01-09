@@ -11,7 +11,7 @@ import java.net.URI;
 
 
 public class StaticRequestHandler {
-    private static final String root = "webpage";
+    private static final String root = "../../frontend/dist";
 
     public void prepareHeaders(HttpExchange t, String fileName) throws IOException {
         String mime = "text/html";

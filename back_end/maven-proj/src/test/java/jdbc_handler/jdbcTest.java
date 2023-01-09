@@ -11,11 +11,12 @@ public class jdbcTest {
     @Test
     public void testGetData() {
         // assertEquals(String message, long expected, long actual)
-        String exmp_query = "SELECT * FROM test_users";
+        String exmp_query = "SELECT * FROM test_users where 1=?";
+        String[] args = {"1"};
         String[] columns = {"user_id", "login", "PASSWD_HASH"};
         ArrayList<ArrayList<String>> result = new ArrayList<>();
         try {
-            result = getFromQuery(exmp_query, columns);
+            result = getFromQuery(exmp_query, args, columns);
         } catch (SQLException e) {System.out.println("problem");}
 
 
@@ -26,37 +27,40 @@ public class jdbcTest {
     @Test
     public void testInsertDeleteData() {
         // insert
-        String insertQuery = "INSERT INTO test_users (user_id, login, passwd_hash) values (99, 'delete-user','passwd')";
+        String insertQuery = "INSERT INTO test_users (user_id, login, passwd_hash) values (?, ?, ?)";
+        String[] args = {"999", "delete-user", "haslo"};
         int insertResult=-1;
         try {
-            insertResult = executeQuery(insertQuery);
+            insertResult = executeQuery(insertQuery, args);
         } catch (SQLException e) {System.out.println("problem");}
         assertEquals("number of rows inserted", 1, insertResult);
 
 
         // check
-        String exmp_query = "select count(user_id) as num from test_users where login = 'delete-user'";
+        String exmp_query = "select count(user_id) as num from test_users where login = ?";
         String[] columns = {"num"};
+        String[] args2 = {"delete-user"};
         ArrayList<ArrayList<String>> result = new ArrayList<>();
         try {
-            result = getFromQuery(exmp_query, columns);
+            result = getFromQuery(exmp_query, args2, columns);
         } catch (SQLException e) {System.out.println("problem");}
         assertEquals("number of current delete-users, should be 1", result.get(0).get(0), "1");
 
         // delete
-        String deleteQuery = "delete from test_users where login = 'delete-user'";
+        String deleteQuery = "delete from test_users where login = ?";
+        String[] args3 = {"delete-user"};
         int deleteResult=-1;
         try {
-            deleteResult = executeQuery(deleteQuery);
+            deleteResult = executeQuery(deleteQuery, args3);
         } catch (SQLException e) {System.out.println("problem");}
         assertEquals("number of rows deleted", deleteResult, 1);
 
         //check delete
-        String afterDeleteQuery = "select count(user_id) as num from test_users where login = 'delete-user'";
+        String afterDeleteQuery = "select count(user_id) as num from test_users where login = ?";
         String[] delColumns = {"num"};
         ArrayList<ArrayList<String>> delResult = new ArrayList<>();
         try {
-            delResult = getFromQuery(afterDeleteQuery, delColumns);
+            delResult = getFromQuery(afterDeleteQuery, args3, delColumns);
         } catch (SQLException e) {System.out.println("problem");}
         assertEquals("number of users after delete", delResult.get(0).get(0), "0");
 

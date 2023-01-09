@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static jdbc_handler.jdbc_exp.executeQuery;
@@ -16,7 +17,7 @@ import static jdbc_handler.jdbc_exp.getFromQuery;
 
 public class enterExchange implements ApiMethodes {
 
-    public static void main() {
+    public static void main(String args[]) {
         String exchange_sell_id = "123";
         JSONArray buyGroups = new JSONArray();
         buyGroups.put("el1");
@@ -45,8 +46,9 @@ public class enterExchange implements ApiMethodes {
         }
 
         try {
-            String query = "INSERT INTO exchanges_sell (ug_id, insertion_date) values ('" + ug_id + "', '" + insertion_date + "')";
-            executeQuery(query);
+            String query = "INSERT INTO exchanges_sell (ug_id, insertion_date) values (?, ?)";
+            String[] args = {ug_id, insertion_date};
+            executeQuery(query, args);
 
             String exchange_sell_id = getExchangeSellId(ug_id, insertion_date);
             if (exchange_sell_id.equals("error")) {
@@ -54,12 +56,19 @@ public class enterExchange implements ApiMethodes {
                 return result;
             }
 
-            String query1 = String.format("INSERT INTO exchanges_buy (exchange_sell_id, group_id) values (%s, %s)", exchange_sell_id, buyGroups.getString(0));
+            String query1 = "INSERT INTO exchanges_buy (exchange_sell_id, group_id) values (?, ?)";
+            List<String> list = new ArrayList<>();
+            list.add(exchange_sell_id);
+            list.add(buyGroups.getString(0));
+
             for (int i = 1; i < buyGroups.length(); ++i) {
                 String group_id = buyGroups.getString(i);
-                query1 += String.format(", (%s, %s)", exchange_sell_id, group_id);
+                query1 += ", (?, ?)";
+                list.add(exchange_sell_id);
+                list.add(group_id);
             }
-            executeQuery(query1);
+            String[] args2 = list.toArray(new String[0]);
+            executeQuery(query1, args2);
 
             result.put("code", 200);
             logger.info("New exchange added.");
@@ -71,9 +80,10 @@ public class enterExchange implements ApiMethodes {
     }
     public String getUserGroupId(String login, String group_id) {
         try {
-            String query = "Select ug_id from ser_groups where login='" + login + "' and group_id='" + group_id + "'";
+            String query = "Select ug_id from user_groups where login= ? and group_id= ?";
             String[] columns = {"ug_id"};
-            ArrayList<ArrayList<String>> queryResult = getFromQuery(query, columns);
+            String[] args = {login, group_id};
+            ArrayList<ArrayList<String>> queryResult = getFromQuery(query, args, columns);
             logger.info("Checked ug_id of user: " + login);
             return queryResult.get(0).get(0);
         } catch (SQLException e) {
@@ -82,9 +92,10 @@ public class enterExchange implements ApiMethodes {
     }
     public String getExchangeSellId(String ug_id, String insertion_date) {
         try {
-            String query = "Select exchange_sell_id from exchanges_sell where ug_id='" + ug_id + "' and insertion_date='" + insertion_date + "'";
+            String query = "Select exchange_sell_id from exchanges_sell where ug_id= ? and insertion_date= ?";
             String[] columns = {"exchange_sell_id"};
-            ArrayList<ArrayList<String>> queryResult = getFromQuery(query, columns);
+            String[] args = {ug_id, insertion_date};
+            ArrayList<ArrayList<String>> queryResult = getFromQuery(query, args, columns);
             return queryResult.get(0).get(0);
         } catch (SQLException e) {
             return "error";
