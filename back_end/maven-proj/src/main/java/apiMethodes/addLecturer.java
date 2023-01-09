@@ -46,11 +46,11 @@ public class addLecturer implements ApiMethodes {
         float rating = request.getFloat("rating");
         String realRating = "";
 
-        if (rating == -1) { realRating = "none"; }
+        if (rating == -1) { realRating = "null"; }
         else { realRating = Float.toString(rating); }
 
         String title = request.getString("title");
-        if (title.equals("")) { title = "none"; }
+        if (title.equals("")) { title = "null"; }
 
 
         try {

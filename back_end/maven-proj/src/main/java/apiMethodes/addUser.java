@@ -13,7 +13,6 @@ import static jdbc_handler.jdbc_exp.executeQuery;
 public class addUser implements ApiMethodes {
     private static final Logger logger = LogManager.getLogger(Users.class);
     public JSONObject run(JSONObject request) {
-        //TODO update whole
         JSONObject result = new JSONObject();
         String login = null;
         String password = null;
@@ -32,6 +31,9 @@ public class addUser implements ApiMethodes {
             result.put("code", 400);
             result.put("message", msg);
         }
+        if (name.equals("")) { name = "null"; }
+        if (surname.equals("")) { surname = "null"; }
+        if (email.equals("")) { email = "null"; }
 
         logger.info("Adding user: " + login);
         String hash = generateHash(password);

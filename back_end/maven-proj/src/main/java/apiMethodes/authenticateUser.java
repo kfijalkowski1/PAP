@@ -2,6 +2,7 @@ package apiMethodes;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.SecureRandom;
@@ -22,10 +23,18 @@ public class authenticateUser implements ApiMethodes {
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
     public JSONObject run (JSONObject request) {
-        String login = request.getString("login");
-        String password = request.getString("password");
-
         JSONObject result = new JSONObject();
+        String password;
+        String login;
+        try {
+            login = request.getString("login");
+            password = request.getString("password");
+        } catch (JSONException e) {
+            result.put("code", 400);
+            result.put("message", "wrong request");
+            return result;
+        }
+
         boolean isValid = false;
         logger.info("Try to validate user: " + login);
         try {
@@ -39,13 +48,12 @@ public class authenticateUser implements ApiMethodes {
 
                 String token = generateNewToken();
                 result.put("token", token);
-                ;
                 createNewSession(login, token);
             }
         } catch (SQLException e) {
             isValid = false;
         }
-        if (isValid){
+        if (isValid) {
             result.put("code", 200);
             result.put("message", "");
         } else {

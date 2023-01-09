@@ -42,7 +42,7 @@ public class jdbc_exp {
                 pstmt.setString(i, args[i - 1]);
             }
             ResultSet rs = pstmt.executeQuery();
-            logger.info("JDBC (select) executed query: " + pstmt.toString());
+            logger.info("JDBC (select) executed query");
             // Extract data from result set
             ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
             while (rs.next()) {

@@ -2,6 +2,7 @@ package apiMethodes;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
@@ -15,11 +16,20 @@ import static jdbc_handler.jdbc_exp.getFromQuery;
 public class changePassword implements ApiMethodes {
     private static final Logger logger = LogManager.getLogger(changePassword.class);
     public JSONObject run(JSONObject request) {
-        String login = request.getString("login");
-        String oldPasswd = request.getString("old");
-        String newPasswd = request.getString("new");
-
         JSONObject result = new JSONObject();
+
+        String login = null;
+        String oldPasswd = null;
+        String newPasswd = null;
+        try {
+            login = request.getString("login");
+            oldPasswd = request.getString("old");
+            newPasswd = request.getString("new");
+        } catch (JSONException e) {
+            result.put("code", 400);
+            result.put("message", "incorrect request");
+        }
+
 
         if (isPasswordValid(login, oldPasswd)) {
             String newHash = generateHash(newPasswd);
@@ -35,8 +45,7 @@ public class changePassword implements ApiMethodes {
                 result.put("code", 500);
                 result.put("message", "problem with DB");
             }
-        }
-        else {
+        } else {
             result.put("code", 400);
             result.put("message", "incorrect old password");
         }

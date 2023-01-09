@@ -3,6 +3,7 @@ package apiMethodes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
@@ -34,10 +35,18 @@ public class enterExchange implements ApiMethodes {
     private static final Logger logger = LogManager.getLogger(enterExchange.class);
     public JSONObject run(JSONObject request) {
         JSONObject result = new JSONObject();
-        String login = request.getString("login");
-        String sell_group_id = request.getString("sell_group_id");
-        JSONArray buyGroups = request.getJSONArray("buy_group_ids");
-        String ug_id = getUserGroupId(login, sell_group_id);
+        String ug_id;
+        JSONArray buyGroups = new JSONArray();
+        try {
+            String login = request.getString("login");
+            int sell_group_id = request.getInt("sellGroupId");
+            buyGroups = request.getJSONArray("buyGroupIds");
+            ug_id = getUserGroupId(login, sell_group_id);
+        } catch (JSONException e) {
+            result.put("code", 400);
+            result.put("message", "wrong request");
+            return result;
+        }
         String insertion_date = getCurrentDate();
 
         if (Objects.equals(ug_id, "error")) {
@@ -59,10 +68,10 @@ public class enterExchange implements ApiMethodes {
             String query1 = "INSERT INTO exchanges_buy (exchange_sell_id, group_id) values (?, ?)";
             List<String> list = new ArrayList<>();
             list.add(exchange_sell_id);
-            list.add(buyGroups.getString(0));
+            list.add(Integer.toString(buyGroups.getInt(0)));
 
             for (int i = 1; i < buyGroups.length(); ++i) {
-                String group_id = buyGroups.getString(i);
+                String group_id = Integer.toString(buyGroups.getInt(i));
                 query1 += ", (?, ?)";
                 list.add(exchange_sell_id);
                 list.add(group_id);
@@ -78,11 +87,11 @@ public class enterExchange implements ApiMethodes {
         }
         return result;
     }
-    public String getUserGroupId(String login, String group_id) {
+    public String getUserGroupId(String login, int group_id) {
         try {
             String query = "Select ug_id from user_groups where login= ? and group_id= ?";
             String[] columns = {"ug_id"};
-            String[] args = {login, group_id};
+            String[] args = {login, Integer.toString(group_id)};
             ArrayList<ArrayList<String>> queryResult = getFromQuery(query, args, columns);
             logger.info("Checked ug_id of user: " + login);
             return queryResult.get(0).get(0);
