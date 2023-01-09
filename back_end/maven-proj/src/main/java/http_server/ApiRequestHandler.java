@@ -28,6 +28,11 @@ public class ApiRequestHandler {
         methods.put("/addLecturer", new addLecturer());
         methods.put("/addGroup", new addGroup());
         methods.put("/addClassroom", new addClassroom());
+        methods.put("/addCourse", new addCourse());
+        methods.put("/addLecturer", new addLecturer());
+        methods.put("/getCourseTypes", new getCourseTypes());
+        methods.put("/getFaculties", new getFaculties());
+        methods.put("/getLecturerDegrees", new getLecturerDegrees());
     }
 
     public String parseInputRequest(HttpExchange t) throws IOException {
