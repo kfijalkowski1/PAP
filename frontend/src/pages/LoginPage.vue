@@ -65,43 +65,51 @@ const onRegister = errorCatcher(async () => {
                     v-model="password"
                 />
 
-                <v-text-field
-                    v-if="mode === 'register'"
-                    label="Confirm password"
-                    color="primary"
-                    fullWidth
-                    variant="filled"
-                    type="password"
-                    v-model="confirmPassword"
-                />
-                <v-text-field
-                    v-if="mode === 'register'"
-                    label="Firstname"
-                    placeholder="Jan"
-                    color="primary"
-                    fullWidth
-                    variant="filled"
-                    v-model="firstname"
-                />
-                <v-text-field
-                    v-if="mode === 'register'"
-                    label="Surname"
-                    placeholder="Przyklad"
-                    color="primary"
-                    fullWidth
-                    variant="filled"
-                    v-model="surname"
-                />
-                <v-text-field
-                    v-if="mode === 'register'"
-                    label="Email"
-                    type="email"
-                    placeholder="jan.przyklad@gmail.com"
-                    color="primary"
-                    fullWidth
-                    variant="filled"
-                    v-model="email"
-                />
+                <v-expand-transition>
+                    <v-text-field
+                        v-if="mode === 'register'"
+                        label="Confirm password"
+                        color="primary"
+                        fullWidth
+                        variant="filled"
+                        type="password"
+                        v-model="confirmPassword"
+                    />
+                </v-expand-transition>
+                <v-expand-transition>
+                    <v-text-field
+                        v-if="mode === 'register'"
+                        label="Firstname"
+                        placeholder="Jan"
+                        color="primary"
+                        fullWidth
+                        variant="filled"
+                        v-model="firstname"
+                    />
+                </v-expand-transition>
+                <v-expand-transition>
+                    <v-text-field
+                        v-if="mode === 'register'"
+                        label="Surname"
+                        placeholder="Przyklad"
+                        color="primary"
+                        fullWidth
+                        variant="filled"
+                        v-model="surname"
+                    />
+                </v-expand-transition>
+                <v-expand-transition>
+                    <v-text-field
+                        v-if="mode === 'register'"
+                        label="Email"
+                        type="email"
+                        placeholder="jan.przyklad@gmail.com"
+                        color="primary"
+                        fullWidth
+                        variant="filled"
+                        v-model="email"
+                    />
+                </v-expand-transition>
 
                 <v-btn
                     v-if="mode === 'login'"
@@ -133,13 +141,13 @@ const onRegister = errorCatcher(async () => {
     min-height: calc(100vh - 64px);
 }
 .container {
-    width: 50%;
     max-width: 500px;
     margin: auto;
     justify-content: center;
     align-items: center;
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
 }
 .background {
     width: 100%;
