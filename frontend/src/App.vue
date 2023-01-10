@@ -19,13 +19,19 @@ const drawer = $ref(false)
             <v-sheet v-if="lgAndUp" elevation="2" class="drawerList">
                 <NavigationList />
             </v-sheet>
-            <router-view />
+            <div class="content">
+                <router-view />
+            </div>
             <ErrorSnackBar />
         </v-main>
     </v-app>
 </template>
 
 <style scoped>
+.container {
+    display: flex;
+    flex-direction: row;
+}
 .content {
     display: flex;
     flex-direction: column;
