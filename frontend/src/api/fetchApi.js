@@ -14,6 +14,7 @@ const fetchApi = async (endpoint, args) => {
         }
     }
 
+    console.log('Fetching', endpoint, args)
     const res = await fetch(address + endpoint, {
         method: 'post',
         headers: {
@@ -28,6 +29,8 @@ const fetchApi = async (endpoint, args) => {
     }).catch(throwError(500, 'Network Error'))
 
     const data = await res.json().catch(throwError(500, 'JSON Error'))
+
+    console.log('Got', data)
 
     if (data.code !== 200) {
         console.error('api error', data)

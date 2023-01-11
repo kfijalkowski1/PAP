@@ -15,6 +15,8 @@ import addLecturer from './addLecturer'
 import getClassrooms from './getClassrooms'
 import getLecturerDegrees from './getLecturerDegrees'
 import getLecturers from './getLecturers'
+import getFaculties from './getFaculties'
+import getCourses from './getCourses'
 
 export {
     fetchApi,
@@ -34,4 +36,6 @@ export {
     getClassrooms,
     getLecturerDegrees,
     getLecturers,
+    getFaculties,
+    getCourses,
 }

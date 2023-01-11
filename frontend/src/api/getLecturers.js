@@ -9,5 +9,11 @@ export default async () => {
             'Invalid response from server'
         )
     )
-    return result.lecturers
+    return result.lecturers.map(({ title, name, surname, lecturerId }) => ({
+        lecturerId,
+        title,
+        name,
+        surname,
+        previewName: `${title} ${name} ${surname}`,
+    }))
 }

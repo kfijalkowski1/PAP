@@ -1,9 +1,9 @@
 import { fetchApi } from './fetchApi'
 
-export default async (code, facultyId) => {
+export default async (code, name, type, facultyId) => {
     return await fetchApi('addCourse', {
-        type: 'lab',
-        name: '',
+        type,
+        name,
         code,
         facultyId,
     })
