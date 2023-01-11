@@ -12,24 +12,31 @@ onMounted(
     })
 )
 
+const parseTime = (minutes) => `${Math.floor(minutes / 60)}:${minutes % 60}`
+
 const timeString = (group) =>
-    `${dayStrings[group.day]} ${group.timeStart} - ${group.timeEnd}`
+    `${dayStrings[group.day]} ${parseTime(group.timeStart)} - ${parseTime(
+        group.timeEnd
+    )}`
 </script>
 
 <template>
     <div class="wrapper">
-        <v-expand-transition>
+        <v-expand-transition
+            v-for="(exchange, index) in exchanges"
+            :key="index"
+        >
             <v-sheet
                 elevation="2"
-                v-for="(exchange, index) in exchanges"
-                :key="index"
                 :class="
                     'exchange ' +
                     (exchange.complete ? 'exchangeComplete' : 'exchangePending')
                 "
                 rounded
             >
-                <h2 style="display: inline">{{ exchange.courseCode }}</h2>
+                <h2 style="display: inline">
+                    {{ exchange.sellGroup.courseCode }}
+                </h2>
                 <span class="text-subtitle1" style="float: right">{{
                     exchange.complete ? 'complete' : 'pending'
                 }}</span>

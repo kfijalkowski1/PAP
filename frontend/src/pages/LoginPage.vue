@@ -3,6 +3,7 @@ import { $ref } from 'vue/macros'
 import { addUser, loginValid, authenticateUser } from '@/api'
 import { useAuthStore } from '@/stores'
 import { throwIf, errorCatcher } from '@/utils'
+import router from '@/router'
 
 const auth = useAuthStore()
 
@@ -25,6 +26,8 @@ const onLogin = errorCatcher(async () => {
 
     console.log('Login succesful!')
     console.log(auth.login, auth.token)
+
+    router.push('/dashboard')
 })
 
 const onRegister = errorCatcher(async () => {
