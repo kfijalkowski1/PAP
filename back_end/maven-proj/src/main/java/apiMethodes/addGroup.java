@@ -53,7 +53,7 @@ public class addGroup implements ApiMethodes {
             int check = executeQuery(query1, args);
             if (check != 1) {
                 logger.info("changed more than 1 row, sth strange, gonna abort");
-                String[] empty = {""};
+                String[] empty = {};
                 executeQuery("rollback", empty);
                 result.put("code", 500);
                 return result;

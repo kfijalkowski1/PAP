@@ -33,6 +33,16 @@ public class ApiRequestHandler {
         methods.put("/getCourseTypes", new getCourseTypes());
         methods.put("/getFaculties", new getFaculties());
         methods.put("/getLecturerDegrees", new getLecturerDegrees());
+        methods.put("/getClassrooms", new getClassrooms());
+        methods.put("/getLecturers", new getLecturers());
+        methods.put("/getCourses", new getCourses());
+        methods.put("/getExchanges", new getExchanges());
+        methods.put("/getUserInfo", new getUserInfo());
+        methods.put("/addFirstname", new addFirstName());
+        methods.put("/addSurname", new addSurname());
+        methods.put("/addUserGroup", new addUserGroup());
+        methods.put("/getAllGroups", new getAllGroups());
+        methods.put("/getUserGroups", new getUserGroups());
     }
 
     public String parseInputRequest(HttpExchange t) throws IOException {
