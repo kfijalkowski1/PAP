@@ -4,6 +4,7 @@ import {
     DashboardPage,
     CreateExchangePage,
     UserInfoPage,
+    MyGroupsPage,
     LoginPage,
     TestingPage,
 } from '@/pages'
@@ -25,8 +26,13 @@ const routes = [
         component: CreateExchangePage,
     },
     {
+        path: '/myGroups',
+        name: 'myGroups',
+        component: MyGroupsPage,
+    },
+    {
         path: '/userInfo',
-        name: 'userinfo',
+        name: 'userInfo',
         component: UserInfoPage,
     },
     {

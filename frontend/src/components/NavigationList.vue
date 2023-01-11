@@ -19,6 +19,11 @@ const links = computed(() =>
                   icon: 'mdi-plus',
               },
               {
+                  to: '/myGroups',
+                  text: 'My groups',
+                  icon: 'mdi-account-multiple',
+              },
+              {
                   to: '/userInfo',
                   text: 'User information',
                   icon: 'mdi-account',

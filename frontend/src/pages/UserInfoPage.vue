@@ -21,7 +21,6 @@ onMounted(
 )
 
 const updateFirstname = errorCatcher(async (newValue) => {
-    console.log(newValue)
     await addFirstname(newValue)
     userInfo = await getUserInfo()
 })
