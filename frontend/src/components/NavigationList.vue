@@ -13,7 +13,16 @@ const links = computed(() =>
                   icon: 'mdi-view-dashboard',
               },
               { to: '/browse', text: 'Browse exchanges', icon: 'mdi-magnify' },
-              { to: '/addExchange', text: 'Create exchange', icon: 'mdi-plus' },
+              {
+                  to: '/createExchange',
+                  text: 'Create exchange',
+                  icon: 'mdi-plus',
+              },
+              {
+                  to: '/userInfo',
+                  text: 'User information',
+                  icon: 'mdi-account',
+              },
           ]
         : [
               { to: '/', text: 'Home', icon: 'mdi-home' },
