@@ -24,7 +24,7 @@ const submit = errorCatcher(async () => {
     await addCourse(code, name, type, props.facultyId)
     const newOptions = await getCourses(props.facultyId)
 
-    let id = newOptions.find((val) => val.code === code).lecturerId
+    let id = newOptions.find((val) => val.code === code).courseId
 
     emit('setNewOptions', newOptions)
     emit('setNewValue', id)

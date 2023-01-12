@@ -19,6 +19,7 @@ import getFaculties from './getFaculties'
 import getCourses from './getCourses'
 import getCourseTypes from './getCourseTypes'
 import getGroups from './getGroups'
+import getUserGroups from './getUserGroups'
 import addUserGroup from './addUserGroup'
 
 export {
@@ -43,5 +44,6 @@ export {
     getCourses,
     getCourseTypes,
     getGroups,
+    getUserGroups,
     addUserGroup,
 }

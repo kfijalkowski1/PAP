@@ -18,8 +18,10 @@ const submit = errorCatcher(async () => {
     await addClassroom(classNr, props.facultyId)
     const newOptions = await getClassrooms(props.facultyId)
 
+    let id = newOptions.find((val) => val.nr === classNr).id
+
     emit('setNewOptions', newOptions)
-    emit('setNewValue', classNr)
+    emit('setNewValue', id)
     emit('update:modelValue', false)
 })
 </script>

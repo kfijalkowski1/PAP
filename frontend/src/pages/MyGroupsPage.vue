@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, watch } from 'vue'
+import { onMounted, watchEffect } from 'vue'
 import { $ref } from 'vue/macros'
 import {
     getClassrooms,
@@ -46,24 +46,45 @@ onMounted(
     })
 )
 
-watch(
-    faculty,
+watchEffect(
     errorCatcher(async () => {
-        classroomOptions = await getClassrooms()
-        courseOptions = await getCourses()
+        if (faculty) {
+            classroomOptions = await getClassrooms(faculty)
+            courseOptions = await getCourses(faculty)
+        } else {
+            classroomOptions = []
+            classroom = null
+            courseOptions = []
+            course = null
+            groupNrOptions = []
+            groupNr = null
+        }
     })
 )
 
-watch(
-    course,
+watchEffect(
     errorCatcher(async () => {
-        groupNrOptions = await getGroups()
+        if (course) {
+            groupNrOptions = await getGroups(course)
+        } else {
+            groupNrOptions = []
+            groupNr = null
+        }
     })
 )
 
 const joinGroup = errorCatcher(async () => {
-    await addUserGroup(groupNr.groupId)
+    await addUserGroup(groupNr)
     userGroups = await getUserGroups()
+
+    faculty = null
+    lecturer = null
+    classroomOptions = []
+    classroom = null
+    courseOptions = []
+    course = null
+    groupNrOptions = []
+    groupNr = null
 })
 </script>
 
@@ -128,8 +149,8 @@ const joinGroup = errorCatcher(async () => {
                     label="Classroom"
                     v-model="classroom"
                     :items="classroomOptions"
-                    itemTitle="classNr"
-                    itemValue="classNr"
+                    itemTitle="nr"
+                    itemValue="id"
                 />
                 <v-btn
                     icon="mdi-plus"
@@ -141,7 +162,7 @@ const joinGroup = errorCatcher(async () => {
                     v-model="addClassroomDialog"
                     @setNewValue="classroom = $event"
                     @setNewOptions="classroomOptions = $event"
-                    :facultyId="faculty ? faculty.id : null"
+                    :facultyId="faculty"
                 />
             </div>
             <div class="line">
@@ -149,7 +170,7 @@ const joinGroup = errorCatcher(async () => {
                     label="Course"
                     v-model="course"
                     :items="courseOptions"
-                    itemTitle="name"
+                    itemTitle="code"
                     itemValue="courseId"
                 />
                 <v-btn
@@ -162,7 +183,7 @@ const joinGroup = errorCatcher(async () => {
                     v-model="addCourseDialog"
                     @setNewValue="course = $event"
                     @setNewOptions="courseOptions = $event"
-                    :facultyId="faculty ? faculty.id : null"
+                    :facultyId="faculty"
                 />
             </div>
             <div class="line">
@@ -183,9 +204,9 @@ const joinGroup = errorCatcher(async () => {
                     v-model="addGroupNrDialog"
                     @setNewValue="groupNr = $event"
                     @setNewOptions="groupNrOptions = $event"
-                    :courseId="course ? course.courseId : null"
-                    :classroomId="classroom ? classroom.id : null"
-                    :lecturerId="lecturer ? lecturer.lecturerId : null"
+                    :courseId="course"
+                    :classroomId="classroom"
+                    :lecturerId="lecturer"
                 />
             </div>
             <v-btn color="primary" @click="joinGroup"> Join group </v-btn>

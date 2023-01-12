@@ -18,8 +18,8 @@ let day = $ref(null)
 let timeStart = $ref(null)
 let timeEnd = $ref(null)
 
-const convertTime = (val) => {
-    const [hours, minutes] = val.split(':').map((val) => parseInt(val))
+const convertTime = (value) => {
+    const [hours, minutes] = value.split(':').map((val) => parseInt(val))
     return 60 * hours + minutes
 }
 
@@ -59,6 +59,8 @@ const submit = errorCatcher(async () => {
     >
         <div class="dialogWrapper">
             <v-card class="dialog">
+                <v-text-field v-model="groupNr" label="Group number" />
+
                 <v-select
                     v-model="day"
                     label="Day"
@@ -67,8 +69,16 @@ const submit = errorCatcher(async () => {
                     item-value="value"
                 />
 
-                <v-text-field v-model="startTime" label="Start time" />
-                <v-text-field v-model="endTime" label="End time" />
+                <v-text-field
+                    v-model="timeStart"
+                    label="Start time"
+                    placeholder="HH:MM"
+                />
+                <v-text-field
+                    v-model="timeEnd"
+                    label="End time"
+                    placeholder="HH:MM"
+                />
 
                 <div style="float: right">
                     <v-btn style="margin: 4px" @click="cancel">Cancel</v-btn>
