@@ -16,8 +16,8 @@ public class getCourseTypes implements ApiMethodes {
         JSONArray courses = new JSONArray()
                 .put("laboratorium")
                 .put("seminarium")
-                .put("ćwiczenia")
-                .put("wykład");
+                .put("cwiczenia")
+                .put("wyklad");
 
         response.put("code", 200);
         response.put("courses", courses);

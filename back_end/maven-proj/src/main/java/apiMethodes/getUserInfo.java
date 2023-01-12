@@ -35,13 +35,10 @@ public class getUserInfo implements ApiMethodes {
             result = getFromQuery(query, args, columns);
 
             String email = result.get(0).get(0);
-            if (email.equals("null")) { email = "";}
 
             String name = result.get(0).get(1);
-            if (name.equals("null")) { email = "";}
 
             String surname = result.get(0).get(2);
-            if (surname.equals("null")) { email = "";}
 
 
             response.put("email", email);

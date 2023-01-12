@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 import static jdbc_handler.jdbc_exp.getFromQuery;
 
-public class getAllGroups implements ApiMethodes {
-    private static final Logger logger = LogManager.getLogger(getAllGroups.class);
+public class getGroups implements ApiMethodes {
+    private static final Logger logger = LogManager.getLogger(getGroups.class);
     public JSONObject run(JSONObject request) {
         logger.info("Getting all groups");
         JSONObject response = new JSONObject();

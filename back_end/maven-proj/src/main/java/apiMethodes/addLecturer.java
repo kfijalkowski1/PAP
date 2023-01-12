@@ -38,6 +38,7 @@ public class addLecturer implements ApiMethodes {
         if(!validateData(request)) {
             logger.info("Data invalid, adding classroom aborted, incorrect keys in json");
             result.put("code", 400);
+            result.put("message", "invalid data");
             return result;
         }
 
@@ -46,11 +47,10 @@ public class addLecturer implements ApiMethodes {
         float rating = request.getFloat("rating");
         String realRating = "";
 
-        if (rating == -1) { realRating = "null"; }
+        if (rating == -1) { realRating = "0"; }
         else { realRating = Float.toString(rating); }
 
         String title = request.getString("title");
-        if (title.equals("")) { title = "null"; }
 
 
         try {

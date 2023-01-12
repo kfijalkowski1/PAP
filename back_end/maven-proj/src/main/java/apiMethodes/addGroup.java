@@ -79,16 +79,16 @@ public class addGroup implements ApiMethodes {
         Boolean result = true;
         try{
             logger.info("Validating data...");
-            int time_start = request.getInt("time_start");
-            int time_end = request.getInt("time_end");
+            int time_start = request.getInt("timeStart");
+            int time_end = request.getInt("timeEnd");
             int day = request.getInt("day");
-            int classroom_id = request.getInt("classroom_id");
-            int lecturer_id = request.getInt("lecturer_id");
-            int course_id = request.getInt("course_id");
-            int group_nr = request.getInt("group_nr");
+            int classroom_id = request.getInt("classroomId");
+            int lecturer_id = request.getInt("lecturerId");
+            int course_id = request.getInt("courseId");
+            int group_nr = Integer.parseInt(request.getString("groupNr"));
 
             // validate time
-            if (time_start <= time_end || 1440 < time_start || time_start< 0 || 1440 < time_end || time_end< 0)
+            if (time_start >= time_end || 1440 < time_start || time_start< 0 || 1440 < time_end || time_end< 0)
             {
                 result = false;
             }
@@ -97,9 +97,9 @@ public class addGroup implements ApiMethodes {
             if (day < 0 || day > 6) result=false;
 
 
-
-
         } catch (JSONException e) {
+            result = false;
+        } catch (NumberFormatException f) {
             result = false;
         }
         return result;

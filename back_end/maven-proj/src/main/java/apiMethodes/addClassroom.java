@@ -25,12 +25,13 @@ public class addClassroom implements ApiMethodes {
         // validate data
         try{
             logger.info("Validating data...");
-            class_nr = request.getString("classNr");
+            class_nr = request.getString("nr");
             faculty_id = request.getInt("facultyId");
             // validate class number and faculty id
             if (class_nr.length() > 7 || faculty_id > 99 || faculty_id < 0)
             {
                 logger.info("Data invalid, adding classroom aborted");
+                result.put("message", "Data invalid, adding classroom aborted");
                 result.put("code", 400);
                 return result;
             }

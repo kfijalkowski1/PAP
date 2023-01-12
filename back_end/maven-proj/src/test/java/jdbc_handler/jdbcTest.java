@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class jdbcTest {
     @Test
     public void testGetData() {
+        jdbc_exp.connConstructor();
         // assertEquals(String message, long expected, long actual)
         String exmp_query = "SELECT * FROM test_users where 1=?";
         String[] args = {"1"};

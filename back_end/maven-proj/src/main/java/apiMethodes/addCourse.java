@@ -32,9 +32,8 @@ public class addCourse implements ApiMethodes {
         }
         String type = request.getString("type");
         String name = request.getString("name");
-        if (name.equals("")) { name = "null"; }
         String code = request.getString("code");
-        int faculty_id = request.getInt("faculty_id");
+        int faculty_id = request.getInt("facultyId");
 
         try {
             String query1 = "INSERT INTO courses" +

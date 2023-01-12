@@ -41,7 +41,7 @@ public class ApiRequestHandler {
         methods.put("/addFirstname", new addFirstName());
         methods.put("/addSurname", new addSurname());
         methods.put("/addUserGroup", new addUserGroup());
-        methods.put("/getAllGroups", new getAllGroups());
+        methods.put("/getGroups", new getGroups());
         methods.put("/getUserGroups", new getUserGroups());
     }
 
