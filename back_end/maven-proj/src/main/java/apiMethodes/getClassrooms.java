@@ -27,8 +27,8 @@ public class getClassrooms implements ApiMethodes {
         }
 
 
-        String query = "SELECT nr, classroom_id FROM courses where faculty_id=?";
-        String[] columns = {"nr", "classroom_id"};
+        String query = "SELECT nr, CLASSROOM_ID FROM classrooms where faculty_id=?";
+        String[] columns = {"nr", "CLASSROOM_ID"};
         String[] args = {Integer.toString(faculty_id)};
         ArrayList<ArrayList<String>> result;
 

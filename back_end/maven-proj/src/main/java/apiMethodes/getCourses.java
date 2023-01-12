@@ -37,7 +37,7 @@ public class getCourses implements ApiMethodes {
 
             for (ArrayList<String> record : result) {
                 JSONObject course = new JSONObject();
-                course.put("name", record.get(0));
+                course.put("code", record.get(0));
                 course.put("courseId", Integer.parseInt(record.get(1)));
                 courses.put(course);
             }

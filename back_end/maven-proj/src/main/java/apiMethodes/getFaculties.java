@@ -18,9 +18,9 @@ public class getFaculties implements ApiMethodes {
 
         JSONObject response = new JSONObject();
 
-        String query = "SELECT ? FROM faculties";
+        String query = "SELECT shortname, FACULTY_ID FROM faculties";
         String[] columns = {"shortname", "FACULTY_ID"};
-        String[] args = {"shortname, FACULTY_ID"};
+        String[] args = {};
         ArrayList<ArrayList<String>> result;
 
         try {
@@ -30,7 +30,7 @@ public class getFaculties implements ApiMethodes {
             for (ArrayList<String> record : result) {
                 JSONObject faculty = new JSONObject();
                 faculty.put("name", record.get(0));
-                faculty.put("id", record.get(1));
+                faculty.put("id", Integer.parseInt(record.get(1)));
                 faculties.put(faculty);
             }
             response.put("faculties", faculties);

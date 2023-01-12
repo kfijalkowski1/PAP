@@ -31,9 +31,7 @@ public class addUser implements ApiMethodes {
             result.put("code", 400);
             result.put("message", msg);
         }
-        if (name.equals("")) { name = "null"; }
-        if (surname.equals("")) { surname = "null"; }
-        if (email.equals("")) { email = "null"; }
+
 
         logger.info("Adding user: " + login);
         String hash = generateHash(password);
