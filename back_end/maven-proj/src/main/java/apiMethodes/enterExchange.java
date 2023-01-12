@@ -17,8 +17,7 @@ import static jdbc_handler.jdbc_exp.executeQuery;
 import static jdbc_handler.jdbc_exp.getFromQuery;
 
 public class enterExchange implements ApiMethodes {
-
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         String exchange_sell_id = "123";
         JSONArray buyGroups = new JSONArray();
         buyGroups.put("el1");
@@ -35,12 +34,12 @@ public class enterExchange implements ApiMethodes {
     private static final Logger logger = LogManager.getLogger(enterExchange.class);
     public JSONObject run(JSONObject request) {
         JSONObject result = new JSONObject();
+        String login = request.getString("login");
+        int sell_group_id = request.getInt("sellGroupId");
+        JSONArray buyGroups = request.getJSONArray("buyGroupIds");
         String ug_id;
-        JSONArray buyGroups = new JSONArray();
+
         try {
-            String login = request.getString("login");
-            int sell_group_id = request.getInt("sellGroupId");
-            buyGroups = request.getJSONArray("buyGroupIds");
             ug_id = getUserGroupId(login, sell_group_id);
         } catch (JSONException e) {
             result.put("code", 400);
@@ -85,7 +84,39 @@ public class enterExchange implements ApiMethodes {
             result.put("code", 500);
             logger.error("Problem with database");
         }
+
+        // complete exchange if it is possible
+        boolean isDone = completeExchange(sell_group_id, buyGroups);
+        if (isDone) {
+//            oznacz dodane przed chwilą jako completed
+            result.put("code", 200);
+            result.put("message", "Exchange completed");
+            logger.error("Exchange completed");
+        }
         return result;
+    }
+    public boolean completeExchange(int sell_group_id, JSONArray buyGroups) {
+        String query = "SELECT exchange_buy_id, exchange_sell_id, group_id FROM exchanges_buy WHERE group_id=? AND complete='0'";
+        String[] columns = {"exchange_buy_id", "exchange_sell_id, group_id"};
+        String[] args = {Integer.toString(sell_group_id)};
+        try {
+            ArrayList<ArrayList<String>> queryResult = getFromQuery(query, args, columns);
+            for (int i = 0; i < queryResult.size(); ++i) {
+                String query1 = "SELECT exchange_sell_id, ug_id from exchanges_sell WHERE exchange_sell_id=?";
+                String[] columns1 = {"exchange_sell_id", "ug_id"};
+                String[] args1 = {queryResult.get(i).get(1)};
+                ArrayList<ArrayList<String>> jegoOferta = getFromQuery(query1, args1, columns1);
+                for (int j = 0; j < buyGroups.length(); ++j) {
+                    if (buyGroups.get(j) == jegoOferta.get(0).get(1)) {
+//                        WYMIANA!
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            return false;
+        }
+        return false;
     }
     public String getUserGroupId(String login, int group_id) {
         try {
