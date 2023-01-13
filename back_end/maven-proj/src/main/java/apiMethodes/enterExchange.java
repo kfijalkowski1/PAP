@@ -54,8 +54,8 @@ public class enterExchange implements ApiMethodes {
         }
 
         try {
-            String query = "INSERT INTO exchanges_sell (ug_id, insertion_date) values (?, ?)";
-            String[] args = {ug_id, insertion_date};
+            String query = "INSERT INTO exchanges_sell (ug_id, insertion_date) values (?, sysdate)";
+            String[] args = {ug_id};
             executeQuery(query, args);
 
             String exchange_sell_id = getExchangeSellId(ug_id, insertion_date);
@@ -86,6 +86,8 @@ public class enterExchange implements ApiMethodes {
         }
 
         // complete exchange if it is possible
+
+
         boolean isDone = completeExchange(sell_group_id, buyGroups);
         if (isDone) {
 //            oznacz dodane przed chwilą jako completed
@@ -96,27 +98,7 @@ public class enterExchange implements ApiMethodes {
         return result;
     }
     public boolean completeExchange(int sell_group_id, JSONArray buyGroups) {
-        String query = "SELECT exchange_buy_id, exchange_sell_id, group_id FROM exchanges_buy WHERE group_id=? AND complete='0'";
-        String[] columns = {"exchange_buy_id", "exchange_sell_id, group_id"};
-        String[] args = {Integer.toString(sell_group_id)};
-        try {
-            ArrayList<ArrayList<String>> queryResult = getFromQuery(query, args, columns);
-            for (int i = 0; i < queryResult.size(); ++i) {
-                String query1 = "SELECT exchange_sell_id, ug_id from exchanges_sell WHERE exchange_sell_id=?";
-                String[] columns1 = {"exchange_sell_id", "ug_id"};
-                String[] args1 = {queryResult.get(i).get(1)};
-                ArrayList<ArrayList<String>> jegoOferta = getFromQuery(query1, args1, columns1);
-                for (int j = 0; j < buyGroups.length(); ++j) {
-                    if (buyGroups.get(j) == jegoOferta.get(0).get(1)) {
-//                        WYMIANA!
-                        return true;
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            return false;
-        }
-        return false;
+        return true;
     }
     public String getUserGroupId(String login, int group_id) {
         try {
