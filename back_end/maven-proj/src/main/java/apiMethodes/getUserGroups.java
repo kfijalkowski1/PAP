@@ -26,10 +26,10 @@ public class getUserGroups implements ApiMethodes {
             logger.info("Problem with database");
         }
 
-        String query = "select group_nr, group_id, c.code, f.shortname\n" +
+        String query = "select group_nr, group_id, c.code, c.COURSE_ID, f.shortname\n" +
                 "from (((groups join courses c using(COURSE_ID)) join faculties f using(faculty_id)) join user_groups using(group_id))\n" +
                 "where login = ?";
-        String[] columns = {"group_nr", "group_id", "code", "shortname"};
+        String[] columns = {"group_nr", "group_id", "code", "shortname", "COURSE_ID"};
         String[] args = {login};
         ArrayList<ArrayList<String>> result;
 
@@ -43,6 +43,7 @@ public class getUserGroups implements ApiMethodes {
                 group.put("groupId", record.get(1));
                 group.put("courseCode", record.get(2));
                 group.put("facultyShortname", record.get(3));
+                group.put("courseId", record.get(4));
                 groups.put(group);
             }
             response.put("groups", groups);
