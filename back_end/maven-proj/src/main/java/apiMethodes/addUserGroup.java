@@ -10,15 +10,15 @@ import java.util.jar.JarException;
 
 import static jdbc_handler.jdbc_exp.executeQuery;
 
-public class addEmail implements ApiMethodes {
+public class addUserGroup implements ApiMethodes {
     private static final Logger logger = LogManager.getLogger(addEmail.class);
     public JSONObject run(JSONObject request) {
         ;
         JSONObject result = new JSONObject();
-        String e_mail;
+        int groupId;
         String login;
         try {
-            e_mail = request.getString("email");
+            groupId = request.getInt("groupId");
             login = request.getString("login");
         } catch (JSONException e) {
             logger.error(e);
@@ -27,8 +27,8 @@ public class addEmail implements ApiMethodes {
             return result;
         }
 
-        String query = "UPDATE USERS SET email = ? where login = ?";
-        String[] args = {e_mail, login};
+        String query = "insert into user_groups (group_id, login) values (?, ?)";
+        String[] args = {Integer.toString(groupId), login};
         try {
             executeQuery(query, args);
             result.put("code", 200);
