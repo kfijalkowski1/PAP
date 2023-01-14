@@ -39,12 +39,24 @@ const onRegister = errorCatcher(async () => {
     mode = 'login'
     password = ''
 })
+
+const checkKey = (event) => {
+    if (event.keyCode === 13) {
+        if (mode === 'register') onRegister()
+        else onLogin()
+    }
+}
 </script>
 
 <template>
     <div class="wrapper">
         <div class="container">
-            <v-sheet color="white" elevation="2" class="background">
+            <v-sheet
+                color="white"
+                elevation="2"
+                class="background"
+                :onkeydown="checkKey"
+            >
                 <div class="tabs">
                     <v-tabs v-model="mode" color="primary" fixed-tabs>
                         <v-tab value="login">Login</v-tab>
