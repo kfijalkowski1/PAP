@@ -41,8 +41,10 @@ public class jdbc_exp {
     }
 
 
-    public static void main(String[] args) throws SQLException {
-    }
+    public static void main(String[] args) {
+        connConstructor();
+
+}
 
     public static ArrayList<ArrayList<String>> getFromQuery(String QUERY, String[] args, String[] columnLabels) throws SQLException {
         // gets given query from database
@@ -107,6 +109,41 @@ public class jdbc_exp {
             throw e;
         } finally {
             con.close();
+        }
+    }
+
+    public static int executeExchangeFunc(int arg1, int arg2) {
+        int result=-1;
+        logger.info("executing exchange sql func");
+        try {
+            // Connect to the database
+            Connection conn = pds.getConnection();
+
+            // Create a CallableStatement
+            CallableStatement cstmt = conn.prepareCall("{? = call exchange_func(?, ?)}");
+
+            logger.info("exchange args: " + Integer.toString(arg1) + " " + Integer.toString(arg2));
+
+            // Register the OUT parameter
+            cstmt.registerOutParameter(1, Types.INTEGER);
+            cstmt.setInt(2, arg1);
+            cstmt.setInt(3, arg2);
+
+            // Execute the function
+            cstmt.execute();
+
+            // Get the result
+            result = cstmt.getInt(1);
+            System.out.println("Result: " + result);
+
+            // Close the CallableStatement and connection
+            cstmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            logger.error(e);
+            throw e;
+        } finally {
+            return result;
         }
     }
 }

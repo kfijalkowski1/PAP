@@ -26,7 +26,7 @@ public class getUserGroups implements ApiMethodes {
             logger.info("Problem with database");
         }
 
-        String query = "select group_nr, group_id, c.code, c.COURSE_ID, f.shortname\n" +
+        String query = "select group_nr, group_id, c.code, COURSE_ID, f.shortname\n" +
                 "from (((groups join courses c using(COURSE_ID)) join faculties f using(faculty_id)) join user_groups using(group_id))\n" +
                 "where login = ?";
         String[] columns = {"group_nr", "group_id", "code", "shortname", "COURSE_ID"};
