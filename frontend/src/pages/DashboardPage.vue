@@ -18,6 +18,7 @@ onMounted(
         <v-expand-transition
             v-for="(exchange, index) in exchanges"
             :key="index"
+            appear
         >
             <v-sheet
                 elevation="2"
