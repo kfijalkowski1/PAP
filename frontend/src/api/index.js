@@ -21,6 +21,7 @@ import getCourseTypes from './getCourseTypes'
 import getGroups from './getGroups'
 import getUserGroups from './getUserGroups'
 import addUserGroup from './addUserGroup'
+import enterExchange from './enterExchange'
 
 export {
     fetchApi,
@@ -46,4 +47,5 @@ export {
     getGroups,
     getUserGroups,
     addUserGroup,
+    enterExchange,
 }

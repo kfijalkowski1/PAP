@@ -3,7 +3,7 @@ import { onMounted } from 'vue'
 import { $ref } from 'vue/macros'
 import { getExchanges } from '@/api'
 import { errorCatcher } from '@/utils'
-import { dayStrings } from '@/assets'
+import { timeString } from '@/utils'
 let exchanges = $ref([])
 
 onMounted(
@@ -11,13 +11,6 @@ onMounted(
         exchanges = await getExchanges()
     })
 )
-
-const parseTime = (minutes) => `${Math.floor(minutes / 60)}:${minutes % 60}`
-
-const timeString = (group) =>
-    `${dayStrings[group.day]} ${parseTime(group.timeStart)} - ${parseTime(
-        group.timeEnd
-    )}`
 </script>
 
 <template>
