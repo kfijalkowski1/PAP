@@ -36,7 +36,7 @@ const fetchApi = async (endpoint, args) => {
         console.error('api error', data)
         if (data.code === 401) {
             console.info('logging out', data)
-            router.push('/')
+            router.push('/login')
             auth.signOut()
         }
         throw data

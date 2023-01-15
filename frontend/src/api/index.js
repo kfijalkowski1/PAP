@@ -22,6 +22,8 @@ import getGroups from './getGroups'
 import getUserGroups from './getUserGroups'
 import addUserGroup from './addUserGroup'
 import enterExchange from './enterExchange'
+import logout from './logout'
+import changePassword from './changePassword'
 
 export {
     fetchApi,
@@ -48,4 +50,6 @@ export {
     getUserGroups,
     addUserGroup,
     enterExchange,
+    logout,
+    changePassword,
 }

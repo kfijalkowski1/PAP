@@ -3,10 +3,20 @@ import { onMounted } from 'vue'
 import { $ref } from 'vue/macros'
 import { useAuthStore } from '@/stores'
 import UserInfoRow from '@/components/UserInfoRow.vue'
-import { errorCatcher } from '@/utils'
-import { getUserInfo, addFirstname, addSurname, addEmail } from '@/api'
+import { errorCatcher, throwIf } from '@/utils'
+import {
+    getUserInfo,
+    addFirstname,
+    addSurname,
+    addEmail,
+    changePassword,
+} from '@/api'
 
 const auth = useAuthStore()
+
+let oldPassword = $ref(null)
+let password = $ref(null)
+let confirmPassword = $ref(null)
 
 let userInfo = $ref({
     firstname: '',
@@ -31,6 +41,16 @@ const updateSurname = errorCatcher(async (newValue) => {
 const updateEmail = errorCatcher(async (newValue) => {
     await addEmail(newValue)
     userInfo = await getUserInfo()
+})
+
+const onChangePassword = errorCatcher(async () => {
+    throwIf(() => password !== confirmPassword, 400, 'Password mismatch')()
+
+    await changePassword(oldPassword, password)
+
+    oldPassword = null
+    password = null
+    confirmPassword = null
 })
 </script>
 
@@ -69,13 +89,40 @@ const updateEmail = errorCatcher(async (newValue) => {
                     />
                 </tbody>
             </v-table>
+            <h3>Change password</h3>
+            <v-text-field
+                label="Old password"
+                color="primary"
+                fullWidth
+                variant="filled"
+                type="password"
+                v-model="oldPassword"
+            />
+            <v-text-field
+                label="Password"
+                color="primary"
+                fullWidth
+                variant="filled"
+                type="password"
+                v-model="password"
+            />
+            <v-text-field
+                label="Confirm password"
+                color="primary"
+                fullWidth
+                variant="filled"
+                type="password"
+                v-model="confirmPassword"
+            />
+            <v-btn variant="flat" color="primary" @click="onChangePassword">
+                Change password
+            </v-btn>
         </v-sheet>
     </div>
 </template>
 
 <style scoped>
 .wrapper {
-    max-width: 600px;
     margin: auto;
     padding-top: 32px;
 }
