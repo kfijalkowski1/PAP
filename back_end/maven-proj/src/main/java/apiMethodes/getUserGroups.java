@@ -25,7 +25,7 @@ public class getUserGroups implements ApiMethodes {
             response.put("message", "incorrect request");
             logger.info("Problem with database");
         }
-
+    //TODO czas i dzień wysyłam niistniejące
         String query = "select group_nr, group_id, c.code, COURSE_ID, f.shortname\n" +
                 "from (((groups join courses c using(COURSE_ID)) join faculties f using(faculty_id)) join user_groups using(group_id))\n" +
                 "where login = ?";
