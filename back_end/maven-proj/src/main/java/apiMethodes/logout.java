@@ -11,11 +11,12 @@ public class logout implements ApiMethodes {
     private static final Logger logger = LogManager.getLogger(logout.class);
     public JSONObject run(JSONObject request) {
         String login = request.getString("login");
+        String token = request.getString("token");
         JSONObject response = new JSONObject();
 
         try {
-            String query = "DELETE FROM sessions WHERE login= ?";
-            String[] args = {login};
+            String query = "DELETE FROM sessions WHERE login = ? AND token = ?";
+            String[] args = {login, token};
             executeQuery(query, args);
             response.put("code", 200);
             logger.error("Deleted sessions for user: " + login);
