@@ -29,6 +29,10 @@ const submit = errorCatcher(async () => {
     emit('setNewOptions', newOptions)
     emit('setNewValue', id)
     emit('update:modelValue', false)
+
+    type = null
+    name = null
+    code = null
 })
 
 watch(

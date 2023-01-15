@@ -1,22 +1,27 @@
 <script setup>
-import { addGroup, getGroups } from '@/api'
+import { addGroup, getGroups, getClassrooms, getLecturers } from '@/api'
 import { errorCatcher } from '@/utils'
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits, onMounted, watchEffect } from 'vue'
 import { $ref } from 'vue/macros'
 import { dayStrings } from '@/assets'
+import AddLecturerDialog from '@/components/GroupsDialogs/AddLecturerDialog.vue'
+import AddClassroomDialog from '@/components/GroupsDialogs/AddClassroomDialog.vue'
 
-const props = defineProps([
-    'modelValue',
-    'classroomId',
-    'lecturerId',
-    'courseId',
-])
+const props = defineProps(['modelValue', 'facultyId', 'courseId'])
 const emit = defineEmits(['update:modelValue', 'setNewValue', 'setNewOptions'])
 
 let groupNr = $ref(null)
 let day = $ref(null)
 let timeStart = $ref(null)
 let timeEnd = $ref(null)
+
+let classroom = $ref(null)
+let classroomOptions = $ref([])
+let addClassroomDialog = $ref(false)
+
+let lecturer = $ref(null)
+let lecturerOptions = $ref([])
+let addLecturerDialog = $ref(false)
 
 const convertTime = (value) => {
     const [hours, minutes] = value.split(':').map((val) => parseInt(val))
@@ -29,6 +34,12 @@ const cancel = () => {
     timeStart = null
     timeEnd = null
 
+    classroomOptions = []
+    classroom = null
+    groupNr = null
+
+    lecturer = null
+
     emit('update:modelValue', false)
 }
 
@@ -36,8 +47,8 @@ const submit = errorCatcher(async () => {
     await addGroup(
         groupNr,
         props.courseId,
-        props.lecturerId,
-        props.classroomId,
+        lecturer,
+        classroom,
         day,
         convertTime(timeStart),
         convertTime(timeEnd)
@@ -49,7 +60,36 @@ const submit = errorCatcher(async () => {
     emit('setNewOptions', newOptions)
     emit('setNewValue', id)
     emit('update:modelValue', false)
+
+    groupNr = null
+    day = null
+    timeStart = null
+    timeEnd = null
+
+    classroomOptions = []
+    classroom = null
+    groupNr = null
+
+    lecturer = null
 })
+
+onMounted(
+    errorCatcher(async () => {
+        lecturerOptions = await getLecturers()
+    })
+)
+
+watchEffect(
+    errorCatcher(async () => {
+        if (props.facultyId) {
+            classroomOptions = await getClassrooms(props.facultyId)
+        } else {
+            classroomOptions = []
+            classroom = null
+            groupNr = null
+        }
+    })
+)
 </script>
 
 <template>
@@ -80,6 +120,48 @@ const submit = errorCatcher(async () => {
                     placeholder="HH:MM"
                 />
 
+                <div class="line">
+                    <v-autocomplete
+                        label="Lecturer"
+                        v-model="lecturer"
+                        :items="lecturerOptions"
+                        itemTitle="previewName"
+                        itemValue="lecturerId"
+                    />
+                    <v-btn
+                        icon="mdi-plus"
+                        size="small"
+                        class="addButton"
+                        @click="addLecturerDialog = true"
+                    />
+                    <AddLecturerDialog
+                        v-model="addLecturerDialog"
+                        @setNewValue="lecturer = $event"
+                        @setNewOptions="lecturerOptions = $event"
+                    />
+                </div>
+                <div class="line">
+                    <v-autocomplete
+                        label="Classroom"
+                        v-model="classroom"
+                        :items="classroomOptions"
+                        itemTitle="nr"
+                        itemValue="id"
+                    />
+                    <v-btn
+                        icon="mdi-plus"
+                        size="small"
+                        class="addButton"
+                        @click="addClassroomDialog = true"
+                    />
+                    <AddClassroomDialog
+                        v-model="addClassroomDialog"
+                        @setNewValue="classroom = $event"
+                        @setNewOptions="classroomOptions = $event"
+                        :facultyId="props.facultyId"
+                    />
+                </div>
+
                 <div style="float: right">
                     <v-btn style="margin: 4px" @click="cancel">Cancel</v-btn>
                     <v-btn style="margin: 4px" color="primary" @click="submit">
@@ -101,5 +183,10 @@ const submit = errorCatcher(async () => {
     flex-grow: 1;
     max-width: 600px;
     padding: 32px;
+}
+.line {
+    display: flex;
+    flex-direction: row;
+    min-width: 300px;
 }
 </style>

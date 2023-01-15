@@ -34,6 +34,10 @@ const submit = errorCatcher(async () => {
     emit('setNewOptions', newOptions)
     emit('setNewValue', id)
     emit('update:modelValue', false)
+
+    degree = null
+    firstname = null
+    surname = null
 })
 
 watch(

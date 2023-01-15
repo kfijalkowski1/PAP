@@ -2,36 +2,25 @@
 import { onMounted, watchEffect } from 'vue'
 import { $ref } from 'vue/macros'
 import {
-    getClassrooms,
     getCourses,
     getFaculties,
-    getLecturers,
     getGroups,
     getUserGroups,
     addUserGroup,
 } from '@/api'
-import { errorCatcher } from '@/utils'
-import AddLecturerDialog from '@/components/GroupsDialogs/AddLecturerDialog.vue'
+import { errorCatcher, parseTime } from '@/utils'
 import AddCourseDialog from '@/components/GroupsDialogs/AddCourseDialog.vue'
-import AddClassroomDialog from '@/components/GroupsDialogs/AddClassroomDialog.vue'
 import AddGroupNrDialog from '@/components/GroupsDialogs/AddGroupNrDialog.vue'
+import { dayStrings } from '@/assets'
 
 let userGroups = $ref([])
 
 let faculty = $ref(null)
 let facultyOptions = $ref([])
 
-let lecturer = $ref(null)
-let lecturerOptions = $ref([])
-let addLecturerDialog = $ref(false)
-
 let course = $ref(null)
 let courseOptions = $ref([])
 let addCourseDialog = $ref(false)
-
-let classroom = $ref(null)
-let classroomOptions = $ref([])
-let addClassroomDialog = $ref(false)
 
 let groupNr = $ref(null)
 let groupNrOptions = $ref([])
@@ -42,18 +31,14 @@ onMounted(
         userGroups = await getUserGroups()
 
         facultyOptions = await getFaculties()
-        lecturerOptions = await getLecturers()
     })
 )
 
 watchEffect(
     errorCatcher(async () => {
         if (faculty) {
-            classroomOptions = await getClassrooms(faculty)
             courseOptions = await getCourses(faculty)
         } else {
-            classroomOptions = []
-            classroom = null
             courseOptions = []
             course = null
             groupNrOptions = []
@@ -78,9 +63,6 @@ const joinGroup = errorCatcher(async () => {
     userGroups = await getUserGroups()
 
     faculty = null
-    lecturer = null
-    classroomOptions = []
-    classroom = null
     courseOptions = []
     course = null
     groupNrOptions = []
@@ -97,19 +79,28 @@ const joinGroup = errorCatcher(async () => {
                     <tr>
                         <th class="text-left">Faculty</th>
                         <th class="text-left">Course</th>
-                        <th class="text-left">Group</th>
+                        <th class="text-left">Group number</th>
+                        <th class="text-left">Day</th>
+                        <th class="text-left">Time of start</th>
+                        <th class="text-left">Time of end</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-if="userGroups.length === 0">
                         <td></td>
+                        <td></td>
                         <td>No groups :(</td>
+                        <td></td>
+                        <td></td>
                         <td></td>
                     </tr>
                     <tr v-for="group in userGroups" :key="group.groupId">
                         <td>{{ group.facultyShortname }}</td>
                         <td>{{ group.courseCode }}</td>
                         <td>{{ group.groupNr }}</td>
+                        <td>{{ dayStrings[group.day] }}</td>
+                        <td>{{ parseTime(group.timeStart) }}</td>
+                        <td>{{ parseTime(group.timeEnd) }}</td>
                     </tr>
                 </tbody>
             </v-table>
@@ -122,47 +113,6 @@ const joinGroup = errorCatcher(async () => {
                     :items="facultyOptions"
                     itemTitle="name"
                     itemValue="id"
-                />
-            </div>
-            <div class="line">
-                <v-autocomplete
-                    label="Lecturer"
-                    v-model="lecturer"
-                    :items="lecturerOptions"
-                    itemTitle="previewName"
-                    itemValue="lecturerId"
-                />
-                <v-btn
-                    icon="mdi-plus"
-                    size="small"
-                    class="addButton"
-                    @click="addLecturerDialog = true"
-                />
-                <AddLecturerDialog
-                    v-model="addLecturerDialog"
-                    @setNewValue="lecturer = $event"
-                    @setNewOptions="lecturerOptions = $event"
-                />
-            </div>
-            <div class="line">
-                <v-autocomplete
-                    label="Classroom"
-                    v-model="classroom"
-                    :items="classroomOptions"
-                    itemTitle="nr"
-                    itemValue="id"
-                />
-                <v-btn
-                    icon="mdi-plus"
-                    size="small"
-                    class="addButton"
-                    @click="addClassroomDialog = true"
-                />
-                <AddClassroomDialog
-                    v-model="addClassroomDialog"
-                    @setNewValue="classroom = $event"
-                    @setNewOptions="classroomOptions = $event"
-                    :facultyId="faculty"
                 />
             </div>
             <div class="line">
@@ -205,8 +155,7 @@ const joinGroup = errorCatcher(async () => {
                     @setNewValue="groupNr = $event"
                     @setNewOptions="groupNrOptions = $event"
                     :courseId="course"
-                    :classroomId="classroom"
-                    :lecturerId="lecturer"
+                    :facultyId="faculty"
                 />
             </div>
             <v-btn color="primary" @click="joinGroup"> Join group </v-btn>
@@ -216,7 +165,6 @@ const joinGroup = errorCatcher(async () => {
 
 <style scoped>
 .wrapper {
-    max-width: 600px;
     margin: auto;
     padding-top: 32px;
 }
