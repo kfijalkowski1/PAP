@@ -1,4 +1,4 @@
-package apiMethodes;
+package apiMethods;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,8 +8,6 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
 
 import static jdbc_handler.jdbc_exp.executeQuery;
 

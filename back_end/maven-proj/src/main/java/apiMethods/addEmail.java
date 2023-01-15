@@ -1,4 +1,4 @@
-package apiMethodes;
+package apiMethods;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -6,19 +6,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
-import java.util.jar.JarException;
 
 import static jdbc_handler.jdbc_exp.executeQuery;
 
-public class addUserGroup implements ApiMethodes {
+public class addEmail implements ApiMethodes {
     private static final Logger logger = LogManager.getLogger(addEmail.class);
     public JSONObject run(JSONObject request) {
         ;
         JSONObject result = new JSONObject();
-        int groupId;
+        String e_mail;
         String login;
         try {
-            groupId = request.getInt("groupId");
+            e_mail = request.getString("email");
             login = request.getString("login");
         } catch (JSONException e) {
             logger.error(e);
@@ -27,8 +26,8 @@ public class addUserGroup implements ApiMethodes {
             return result;
         }
 
-        String query = "insert into user_groups (group_id, login) values (?, ?)";
-        String[] args = {Integer.toString(groupId), login};
+        String query = "UPDATE USERS SET email = ? where login = ?";
+        String[] args = {e_mail, login};
         try {
             executeQuery(query, args);
             result.put("code", 200);

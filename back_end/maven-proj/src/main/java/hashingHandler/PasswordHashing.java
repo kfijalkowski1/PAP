@@ -1,6 +1,6 @@
 package hashingHandler;
 
-import apiMethodes.loginValid;
+import apiMethods.loginValid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,7 +10,6 @@ import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 
 public class PasswordHashing {
     private static final Logger logger = LogManager.getLogger(loginValid.class);

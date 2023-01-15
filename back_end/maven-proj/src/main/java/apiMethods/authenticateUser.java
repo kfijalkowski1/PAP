@@ -1,4 +1,4 @@
-package apiMethodes;
+package apiMethods;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 
-import static hashingHandler.PasswordHashing.generateHash;
 import static hashingHandler.PasswordHashing.validatePassword;
 import static jdbc_handler.jdbc_exp.executeQuery;
 import static jdbc_handler.jdbc_exp.getFromQuery;

@@ -1,4 +1,4 @@
-package apiMethodes;
+package apiMethods;
 
 import emailHandler.sendEmail;
 import org.apache.logging.log4j.LogManager;
@@ -8,8 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -100,13 +98,18 @@ public class enterExchange implements ApiMethodes {
         }
 
 
-        if (exch_res == 1) {
+        if (exch_res != 0) {
             result.put("code", 200);
             result.put("message", "Exchange completed");
             logger.error("Exchange completed");
-
+            try {
+                String login2 = getLogin(exch_res);
+                sendEmail.exchangeConfirm(login2);
+            } catch (SQLException e) {
+                logger.info("Strange getting second login exception");
+                logger.info(e);
+            }
             sendEmail.exchangeConfirm(login);
-//            sendEmail.exchangeConfirm(login1);
 
         } else {
             result.put("code", 200);
@@ -114,6 +117,17 @@ public class enterExchange implements ApiMethodes {
             logger.error("Exchange not completed");
         }
         return result;
+    }
+
+    public String getLogin(int ug_id) throws SQLException {
+        String query = "Select login from user_groups where ug_id=?";
+        String[] columns = {"login"};
+        String[] args = {Integer.toString(ug_id)};
+        ArrayList<ArrayList<String>> queryResult = getFromQuery(query, args, columns);
+        if (queryResult.size() == 0) {throw new SQLException(); }
+        String login = queryResult.get(0).get(0);
+        logger.info("Checked login of user: " + login);
+        return login;
     }
 
     public String getUserGroupId(String login, int group_id) {

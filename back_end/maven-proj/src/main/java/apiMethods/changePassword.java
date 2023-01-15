@@ -1,4 +1,4 @@
-package apiMethodes;
+package apiMethods;
 
 import emailHandler.sendEmail;
 import org.apache.logging.log4j.LogManager;
@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static hashingHandler.PasswordHashing.generateHash;
 import static hashingHandler.PasswordHashing.validatePassword;

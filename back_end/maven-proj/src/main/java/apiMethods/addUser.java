@@ -1,4 +1,4 @@
-package apiMethodes;
+package apiMethods;
 
 import emailHandler.sendEmail;
 import org.apache.logging.log4j.LogManager;
