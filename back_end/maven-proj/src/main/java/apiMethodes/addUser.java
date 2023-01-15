@@ -42,9 +42,8 @@ public class addUser implements ApiMethodes {
         try {
             executeQuery(query1, args);
             logger.info("User added");
-            if (email != null) {
-                sendEmail.registrationConfirm(login, email);
-            }
+            sendEmail.registrationConfirm(login, email);
+
             result.put("code", 200);
             result.put("message", "");
         } catch (SQLException e) {

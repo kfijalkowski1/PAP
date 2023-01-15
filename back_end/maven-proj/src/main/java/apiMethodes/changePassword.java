@@ -44,11 +44,8 @@ public class changePassword implements ApiMethodes {
                 result.put("code", 200);
                 result.put("message", "");
 
-                // confirmation e-mail
-                String email = getEmail.run(login);
-                if (!Objects.equals(email, "(null)") && !Objects.equals(email, "null")) {
-                    sendEmail.passwordChangeConfirm(email, login);
-                }
+                sendEmail.passwordChangeConfirm(login);
+
             } catch (SQLException e) {
                 logger.error("Problem with database");
                 result.put("code", 500);

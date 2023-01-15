@@ -1,7 +1,10 @@
 package emailHandler;
 
+import apiMethodes.getEmail;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.mail.*;
@@ -11,7 +14,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 public class sendEmail {
-
     public static Session prepareSession() {
         String host = "smtp.gmail.com";
 
@@ -41,22 +43,24 @@ public class sendEmail {
     public static void registrationConfirm(String login, String email) {
         String from = "pap22zim.z27@gmail.com";
 
-        try {
-            MimeMessage message = new MimeMessage(prepareSession());
-            message.setFrom(new InternetAddress(from));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-            message.setSubject("Registration confirmation");
-            String msg = "Hi " + login + ",\n" +
-                         "You have successfully register on our website.\n" +
-                         "Automatically generated, do not reply.";
-            message.setText(msg);
+        if (email != null) {
+            try {
+                MimeMessage message = new MimeMessage(prepareSession());
+                message.setFrom(new InternetAddress(from));
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+                message.setSubject("Registration confirmation");
+                String msg = "Hi " + login + ",\n" +
+                        "You have successfully register on our website.\n" +
+                        "Automatically generated, do not reply.";
+                message.setText(msg);
 
-            System.out.println("sending...");
-            // Send message
-            Transport.send(message);
-            System.out.println("Sent message successfully....");
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
+                System.out.println("sending...");
+                // Send message
+                Transport.send(message);
+                System.out.println("Sent message successfully....");
+            } catch (MessagingException mex) {
+                mex.printStackTrace();
+            }
         }
     }
 
@@ -93,47 +97,53 @@ public class sendEmail {
         }
     }
 
-    public static void exchangeConfirm(String login, String email) {
+    public static void exchangeConfirm(String login) {
         String from = "pap22zim.z27@gmail.com";
+        String email = getEmail.run(login);
 
-        try {
-            MimeMessage message = new MimeMessage(prepareSession());
-            message.setFrom(new InternetAddress(from));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-            message.setSubject("Exchange confirmation");
-            String msg = "Hi " + login + ",\n" +
-                    "You have successfully exchanged groups.\n" +
-                    "Automatically generated, do not reply.";
-            message.setText(msg);
+        if (!Objects.equals(email, "") && !Objects.equals(email, "null")) {
+            try {
+                MimeMessage message = new MimeMessage(prepareSession());
+                message.setFrom(new InternetAddress(from));
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+                message.setSubject("Exchange confirmation");
+                String msg = "Hi " + login + ",\n" +
+                        "You have successfully exchanged groups.\n" +
+                        "Automatically generated, do not reply.";
+                message.setText(msg);
 
-            System.out.println("sending...");
-            // Send message
-            Transport.send(message);
-            System.out.println("Sent message successfully....");
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
+                System.out.println("sending...");
+                // Send message
+                Transport.send(message);
+                System.out.println("Sent message successfully....");
+            } catch (MessagingException mex) {
+                mex.printStackTrace();
+            }
         }
     }
 
-    public static void passwordChangeConfirm(String email, String login) {
+    public static void passwordChangeConfirm(String login) {
         String from = "pap22zim.z27@gmail.com";
+        String email = getEmail.run(login);
 
-        try {
-            MimeMessage message = new MimeMessage(prepareSession());
-            message.setFrom(new InternetAddress(from));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-            message.setSubject("Password changed");
-            String msg = "Hi " + login + ",\n" +
-                    "You have already changed your password.\n" +
-                    "Automatically generated, do not reply.";
-            message.setText(msg);
+        if (!Objects.equals(email, "") && !Objects.equals(email, "null")) {
+            try {
+                MimeMessage message = new MimeMessage(prepareSession());
+                message.setFrom(new InternetAddress(from));
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+                message.setSubject("Password changed");
+                String msg = "Hi " + login + ",\n" +
+                        "You have already changed your password.\n" +
+                        "Automatically generated, do not reply.";
+                message.setText(msg);
 
-            System.out.println("sending...");
-            // Send message
-            Transport.send(message);
-            System.out.println("Sent message successfully....");
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
+                System.out.println("sending...");
+                // Send message
+                Transport.send(message);
+                System.out.println("Sent message successfully....");
+            } catch (MessagingException mex) {
+                mex.printStackTrace();
+            }
         }
     }
 }

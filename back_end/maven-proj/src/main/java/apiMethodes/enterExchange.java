@@ -105,14 +105,8 @@ public class enterExchange implements ApiMethodes {
             result.put("message", "Exchange completed");
             logger.error("Exchange completed");
 
-            String email1 = getEmail.run(login);
-//            String email2 = getEmail.run(login1);
-            if (!Objects.equals(email1, "null") && !Objects.equals(email1, "(null)")) {
-                sendEmail.exchangeConfirm(login, email1);
-            }
-//            if (!Objects.equals(email2, "null") && !Objects.equals(email2, "(null)")) {
-//                sendEmail.exchangeConfirm(login1, email2);
-//            }
+            sendEmail.exchangeConfirm(login);
+//            sendEmail.exchangeConfirm(login1);
 
         } else {
             result.put("code", 200);
