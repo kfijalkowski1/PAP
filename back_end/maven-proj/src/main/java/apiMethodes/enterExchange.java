@@ -1,5 +1,6 @@
 package apiMethodes;
 
+import emailHandler.sendEmail;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -103,6 +104,16 @@ public class enterExchange implements ApiMethodes {
             result.put("code", 200);
             result.put("message", "Exchange completed");
             logger.error("Exchange completed");
+
+            String email1 = getEmail.run(login);
+//            String email2 = getEmail.run(login1);
+            if (!Objects.equals(email1, "null") && !Objects.equals(email1, "(null)")) {
+                sendEmail.exchangeConfirm(login, email1);
+            }
+//            if (!Objects.equals(email2, "null") && !Objects.equals(email2, "(null)")) {
+//                sendEmail.exchangeConfirm(login1, email2);
+//            }
+
         } else {
             result.put("code", 200);
             result.put("message", "Exchange not completed " + Integer.toString(exch_res));

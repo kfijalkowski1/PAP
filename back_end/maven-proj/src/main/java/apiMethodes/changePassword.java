@@ -1,5 +1,6 @@
 package apiMethodes;
 
+import emailHandler.sendEmail;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
@@ -7,6 +8,7 @@ import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static hashingHandler.PasswordHashing.generateHash;
 import static hashingHandler.PasswordHashing.validatePassword;
@@ -15,6 +17,7 @@ import static jdbc_handler.jdbc_exp.getFromQuery;
 
 public class changePassword implements ApiMethodes {
     private static final Logger logger = LogManager.getLogger(changePassword.class);
+
     public JSONObject run(JSONObject request) {
         JSONObject result = new JSONObject();
 
@@ -40,6 +43,12 @@ public class changePassword implements ApiMethodes {
                 logger.info("Password changed for user: " + login);
                 result.put("code", 200);
                 result.put("message", "");
+
+                // confirmation e-mail
+                String email = getEmail.run(login);
+                if (!Objects.equals(email, "(null)") && !Objects.equals(email, "null")) {
+                    sendEmail.passwordChangeConfirm(email, login);
+                }
             } catch (SQLException e) {
                 logger.error("Problem with database");
                 result.put("code", 500);

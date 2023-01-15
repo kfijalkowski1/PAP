@@ -1,5 +1,6 @@
 package apiMethodes;
 
+import emailHandler.sendEmail;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
@@ -41,6 +42,9 @@ public class addUser implements ApiMethodes {
         try {
             executeQuery(query1, args);
             logger.info("User added");
+            if (email != null) {
+                sendEmail.registrationConfirm(login, email);
+            }
             result.put("code", 200);
             result.put("message", "");
         } catch (SQLException e) {
