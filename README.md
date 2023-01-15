@@ -11,6 +11,9 @@
 ## Decription
 The project idea is to create a student-friendly platform for exchanging terms of classes.
 
+#### Link to API documentation
+https://hackmd.io/@gambolkf/rkoV65Ocs
+
 #### Functionalities:
 - place your exchange offer on the market
 - choose an exchange offer from the market
