@@ -2,11 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import {
     HomePage,
     DashboardPage,
+    BrowseExchangesPage,
     CreateExchangePage,
     UserInfoPage,
     MyGroupsPage,
     LoginPage,
-    TestingPage,
 } from '@/pages'
 
 const routes = [
@@ -26,6 +26,11 @@ const routes = [
         component: CreateExchangePage,
     },
     {
+        path: '/browse',
+        name: 'browse',
+        component: BrowseExchangesPage,
+    },
+    {
         path: '/myGroups',
         name: 'myGroups',
         component: MyGroupsPage,
@@ -39,11 +44,6 @@ const routes = [
         path: '/login',
         name: 'login',
         component: LoginPage,
-    },
-    {
-        path: '/testing',
-        name: 'testing',
-        component: TestingPage,
     },
 ]
 

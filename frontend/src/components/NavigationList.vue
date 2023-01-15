@@ -1,6 +1,8 @@
 <script setup>
 import { computed } from 'vue'
 import { useAuthStore } from '@/stores'
+import { errorCatcher } from '@/utils'
+import { logout } from '@/api'
 const auth = useAuthStore()
 
 const links = computed(() =>
@@ -32,9 +34,12 @@ const links = computed(() =>
         : [
               { to: '/', text: 'Home', icon: 'mdi-home' },
               { to: '/login', text: 'Login', icon: 'mdi-login' },
-              { to: '/testing', text: 'Testing', icon: 'mdi-test-tube' },
           ]
 )
+
+const clickLogout = errorCatcher(async () => {
+    await logout()
+})
 </script>
 <template>
     <v-list nav>
@@ -44,6 +49,13 @@ const links = computed(() =>
             </template>
 
             <v-list-item-title>{{ text }}</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="clickLogout" v-if="auth.isSignedIn">
+            <template v-slot:prepend>
+                <v-icon icon="mdi-logout"></v-icon>
+            </template>
+
+            <v-list-item-title>Logout</v-list-item-title>
         </v-list-item>
     </v-list>
 </template>
