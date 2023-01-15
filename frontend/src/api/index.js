@@ -24,6 +24,7 @@ import addUserGroup from './addUserGroup'
 import enterExchange from './enterExchange'
 import logout from './logout'
 import changePassword from './changePassword'
+import userReport from './userReport'
 
 export {
     fetchApi,
@@ -52,4 +53,5 @@ export {
     enterExchange,
     logout,
     changePassword,
+    userReport,
 }

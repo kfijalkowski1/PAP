@@ -2,15 +2,34 @@
 import { ErrorSnackBar, NavigationList } from '@/components'
 import { $ref } from 'vue/macros'
 import { useDisplay } from 'vuetify'
+import ReportIssueDialog from './components/ReportIssueDialog.vue'
+import { useAuthStore } from './stores'
 
 const { lgAndUp } = useDisplay()
 
+const auth = useAuthStore()
+
 const drawer = $ref(false)
+const reportIssue = $ref(false)
 </script>
 <template>
     <v-app>
         <v-app-bar color="primary" absolute>
-            <v-app-bar-nav-icon icon="mdi-menu" @click="drawer = !drawer" />
+            <v-app-bar-nav-icon
+                icon="mdi-menu"
+                @click="drawer = !drawer"
+                v-if="!lgAndUp"
+            />
+            <v-spacer />
+            <v-btn
+                variant="flat"
+                rounded="pill"
+                @click="reportIssue = true"
+                v-if="auth.isSignedIn"
+            >
+                Report issue
+            </v-btn>
+            <ReportIssueDialog v-model="reportIssue" />
         </v-app-bar>
         <v-navigation-drawer v-model="drawer" v-if="!lgAndUp">
             <NavigationList />

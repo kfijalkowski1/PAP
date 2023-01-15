@@ -15,6 +15,15 @@ onMounted(
 
 <template>
     <div class="wrapper">
+        <v-sheet
+            v-if="exchanges.length === 0"
+            elevation="2"
+            class="exchange"
+            rounded
+        >
+            You don't have any exchanges yet! Add one
+            <router-link to="/createExchange">here</router-link>
+        </v-sheet>
         <v-expand-transition
             v-for="(exchange, index) in exchanges"
             :key="index"

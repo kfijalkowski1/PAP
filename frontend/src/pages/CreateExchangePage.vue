@@ -1,9 +1,11 @@
 <script setup>
 import { getGroups, getUserGroups } from '@/api'
 import { errorCatcher, parseTime } from '@/utils'
-import { onMounted, watchEffect } from 'vue'
+import { onMounted, watchEffect, computed } from 'vue'
 import { $ref } from 'vue/macros'
 import { enterExchange } from '@/api'
+import { dayStrings } from '@/assets'
+import router from '@/router'
 
 let userGroups = $ref([
     {
@@ -49,31 +51,51 @@ onMounted(
 watchEffect(
     errorCatcher(async () => {
         if (sellGroup) {
-            matchingGroups = await getGroups(
-                userGroups.find((elem) => elem.groupId === sellGroup).courseId
-            )
+            matchingGroups = (
+                await getGroups(
+                    userGroups.find((elem) => elem.groupId === sellGroup)
+                        .courseId
+                )
+            ).filter((group) => group.groupId !== sellGroup)
 
             buyGroups = []
         }
     })
 )
 
+const sellGroupObject = computed(() =>
+    userGroups.find((elem) => elem.groupId === sellGroup)
+)
+
 const addNewExchange = errorCatcher(async () => {
     await enterExchange(sellGroup, buyGroups)
+
+    sellGroup = null
+    buyGroups = []
+    matchingGroups = []
+
+    router.push('/dashboard')
 })
 </script>
 
 <template>
     <div class="wrapper">
         <v-sheet color="white" elevation="2" class="container">
-            <h3>Group to sell</h3>
+            <h3>Course to trade</h3>
             <v-autocomplete
                 v-model="sellGroup"
-                label="Group to sell"
+                label="Course to trade"
                 :items="userGroups"
-                item-title="groupNr"
+                item-title="courseCode"
                 item-value="groupId"
             />
+            <div v-if="sellGroup">
+                <h3>Current group</h3>
+                <h5>Group nr: {{ sellGroupObject.groupNr }}</h5>
+                <h5>Day: {{ dayStrings[sellGroupObject.day] }}</h5>
+                <h5>Start time: {{ parseTime(sellGroupObject.timeStart) }}</h5>
+                <h5>End time: {{ parseTime(sellGroupObject.timeEnd) }}</h5>
+            </div>
 
             <v-divider />
 
@@ -114,7 +136,7 @@ const addNewExchange = errorCatcher(async () => {
                             />
                         </td>
                         <td>{{ group.groupNr }}</td>
-                        <td>{{ group.day }}</td>
+                        <td>{{ dayStrings[group.day] }}</td>
                         <td>{{ parseTime(group.timeStart) }}</td>
                         <td>{{ parseTime(group.timeEnd) }}</td>
                         <td>
@@ -146,7 +168,6 @@ const addNewExchange = errorCatcher(async () => {
 
 <style scoped>
 .wrapper {
-    max-width: 600px;
     margin: auto;
     padding-top: 32px;
 }
