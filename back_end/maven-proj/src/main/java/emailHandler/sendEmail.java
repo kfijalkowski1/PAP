@@ -38,10 +38,12 @@ public class sendEmail {
         return session;
     }
 
-    public static void registrationConfirm(String login, String email) {
+    public static void registrationConfirm(String login) {
         String from = "pap22zim.z27@gmail.com";
 
-        if (email != null) {
+        String email = getEmail.run(login);
+
+        if (!email.equals("") && !email.equals("null")) {
             try {
                 MimeMessage message = new MimeMessage(prepareSession());
                 message.setFrom(new InternetAddress(from));
@@ -99,7 +101,7 @@ public class sendEmail {
         String from = "pap22zim.z27@gmail.com";
         String email = getEmail.run(login);
 
-        if (!Objects.equals(email, "") && !Objects.equals(email, "null")) {
+        if (!email.equals("") && !email.equals("null")) {
             try {
                 MimeMessage message = new MimeMessage(prepareSession());
                 message.setFrom(new InternetAddress(from));
@@ -124,7 +126,7 @@ public class sendEmail {
         String from = "pap22zim.z27@gmail.com";
         String email = getEmail.run(login);
 
-        if (!Objects.equals(email, "") && !Objects.equals(email, "null")) {
+        if (!email.equals("") && !email.equals("null")) {
             try {
                 MimeMessage message = new MimeMessage(prepareSession());
                 message.setFrom(new InternetAddress(from));

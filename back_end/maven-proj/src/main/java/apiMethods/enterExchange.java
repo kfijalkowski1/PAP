@@ -68,19 +68,11 @@ public class enterExchange implements ApiMethodes {
                 return result;
             }
 
-            String query1 = "INSERT INTO exchanges_buy (exchange_sell_id, group_id) values (?, ?)";
-            List<String> list = new ArrayList<>();
-            list.add(exchange_sell_id);
-            list.add(Integer.toString(buyGroups.getInt(0)));
-
-            for (int i = 1; i < buyGroups.length(); ++i) {
-                String group_id = Integer.toString(buyGroups.getInt(i));
-                query1 += ", (?, ?)";
-                list.add(exchange_sell_id);
-                list.add(group_id);
+            for (int i = 0; i < buyGroups.length(); ++i) {
+                String query1 = "INSERT INTO exchanges_buy (exchange_sell_id, group_id) values (?, ?)";
+                String[] args2 = {exchange_sell_id, Integer.toString(buyGroups.getInt(i))};
+                executeQuery(query1, args2);
             }
-            String[] args2 = list.toArray(new String[0]);
-            executeQuery(query1, args2);
 
 
 

@@ -8,7 +8,9 @@ import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
+import static jdbc_handler.jdbc_exp.getFromArrayQuery;
 import static jdbc_handler.jdbc_exp.getFromQuery;
 
 public class getAllExchanges implements ApiMethodes {
@@ -48,11 +50,26 @@ public class getAllExchanges implements ApiMethodes {
                 courses.put(allCourses.get(i));
             }
         }
-        String strCourses = "(" + courses.get(0);
-        for(int i=1; i < courses.length(); i++) {
-            strCourses += ", " + courses.get(i);
+
+        if(courses.length() == 0) {
+
+            response.put("exchanges", new JSONArray());
+            response.put("code", 200);
+            return response;
         }
-        strCourses += ")";
+
+        String questionString = "(?";
+        List<String> listCourses = new ArrayList<String>();
+        for(int i=0; i< courses.length(); i++){
+            listCourses.add(courses.getString(i));
+        }
+        for(int i=1; i< courses.length(); i++){
+            questionString += ", ?";
+        }
+        int size = listCourses.size();
+        String[] stringCourses = listCourses.toArray(new String[size]);
+
+        questionString += ")";
 
 
 
@@ -75,10 +92,10 @@ public class getAllExchanges implements ApiMethodes {
                 "                                                        where group_id = exchanges_buy.group_id)\n" +
                 "                                                    ORDER BY exchanges_buy.group_id)) as a\n" +
                 "  from (((exchanges_sell join user_groups ug using(ug_id)) join exchanges_buy using(exchange_sell_id))) join groups g on(ug.group_id = g.group_id)\n" +
-                "  WHERE g.course_id in ? and (exchanges_sell.COMPLETING_EXCHANGE_ID is null)\n" +
+                "  WHERE g.course_id in " + questionString + " and (exchanges_sell.COMPLETING_EXCHANGE_ID is null)\n" +
                 "  GROUP BY ug.group_id, exchanges_sell.INSERTION_DATE, exchanges_sell.COMPLETING_EXCHANGE_ID";
         String[] columns = {"a"};
-        String[] args = {strCourses};
+        String[] args = stringCourses;
         ArrayList<ArrayList<String>> result;
 
         try {
