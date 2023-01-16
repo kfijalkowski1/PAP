@@ -57,6 +57,7 @@ public class getAllExchanges implements ApiMethodes {
 
 
         String query = "SELECT json_object('sellGroup'          VALUE (SELECT json_object('groupNr'          VALUE group_nr, \n" +
+                "                                                       'groupId'           VALUE group_id,\n" +
                 "                                                       'timeStart'         VALUE time_start,\n" +
                 "                                                       'timeEnd'           value time_end,\n" +
                 "                                                       'code'              value c.code,\n" +
@@ -67,6 +68,7 @@ public class getAllExchanges implements ApiMethodes {
                 "                   'complete'               value CASE WHEN exchanges_sell.COMPLETING_EXCHANGE_ID is null THEN 0 ELSE 1 END,\n" +
                 "                   'buyGroups'           VALUE json_arrayagg(\n" +
                 "                                                    (SELECT json_object('groupNr'          VALUE group_nr, \n" +
+                "                                                       'groupId'           VALUE group_id,\n" +
                 "                                                       'timeStart'         VALUE time_start,\n" +
                 "                                                       'timeEnd'           value time_end,\n" +
                 "                                                       'code'              value c.code,\n" +

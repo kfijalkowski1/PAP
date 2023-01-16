@@ -34,7 +34,6 @@ const cancel = () => {
     timeStart = null
     timeEnd = null
 
-    classroomOptions = []
     classroom = null
     groupNr = null
 
@@ -66,7 +65,6 @@ const submit = errorCatcher(async () => {
     timeStart = null
     timeEnd = null
 
-    classroomOptions = []
     classroom = null
     groupNr = null
 

@@ -50,7 +50,7 @@ watchEffect(
 watchEffect(
     errorCatcher(async () => {
         if (course) {
-            groupNrOptions = await getGroups(course).filter((group) =>
+            groupNrOptions = (await getGroups(course)).filter((group) =>
                 userGroups.every(
                     (usrGroup) => group.groupId !== usrGroup.groupId
                 )
@@ -145,7 +145,7 @@ const joinGroup = errorCatcher(async () => {
                     label="Group number"
                     v-model="groupNr"
                     :items="groupNrOptions"
-                    itemTitle="groupNr"
+                    itemTitle="previewName"
                     itemValue="groupId"
                 />
                 <v-btn

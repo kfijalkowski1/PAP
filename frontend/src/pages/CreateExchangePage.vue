@@ -7,37 +7,8 @@ import { enterExchange } from '@/api'
 import { dayStrings } from '@/assets'
 import router from '@/router'
 
-let userGroups = $ref([
-    {
-        groupId: 123,
-        groupNr: '012',
-        courseCode: 'PIPR',
-        facultyShortname: 'WEiTI',
-        day: 3,
-        timeStart: 500,
-        timeEnd: 640,
-    },
-])
-let matchingGroups = $ref([
-    {
-        groupId: 100,
-        groupNr: '011',
-        courseCode: 'PIPR',
-        facultyShortname: 'WEiTI',
-        day: 3,
-        timeStart: 500,
-        timeEnd: 640,
-    },
-    {
-        groupId: 101,
-        groupNr: '013',
-        courseCode: 'PIPR',
-        facultyShortname: 'WEiTI',
-        day: 3,
-        timeStart: 500,
-        timeEnd: 640,
-    },
-])
+let userGroups = $ref([])
+let matchingGroups = $ref([])
 
 let sellGroup = $ref(null)
 let buyGroups = $ref([])

@@ -6,9 +6,7 @@ const errorDisplay = useErrorDisplayStore()
 
 const message = computed(() => `${errorDisplay.code}: ${errorDisplay.message}`)
 
-const type = computed(() =>
-    errorDisplay.message.code === 200 ? 'info' : 'error'
-)
+const type = computed(() => (errorDisplay.code === 200 ? 'info' : 'error'))
 </script>
 <template>
     <v-snackbar

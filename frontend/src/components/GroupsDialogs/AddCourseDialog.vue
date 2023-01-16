@@ -7,7 +7,7 @@ import { $ref } from 'vue/macros'
 const props = defineProps(['modelValue', 'facultyId'])
 const emit = defineEmits(['update:modelValue', 'setNewValue', 'setNewOptions'])
 
-let courseTypes = $ref(['aaa'])
+let courseTypes = $ref([])
 
 let type = $ref(null)
 let name = $ref(null)

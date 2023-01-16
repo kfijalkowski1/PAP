@@ -1,9 +1,16 @@
 <script setup>
 import { onMounted, watchEffect } from 'vue'
 import { $ref } from 'vue/macros'
-import { getCourses, getAllExchanges, getUserGroups, getFaculties } from '@/api'
-import { errorCatcher } from '@/utils'
+import {
+    getCourses,
+    getAllExchanges,
+    getUserGroups,
+    getFaculties,
+    enterExchange,
+} from '@/api'
+import { errorCatcher, throwIf } from '@/utils'
 import { timeString } from '@/utils'
+import router from '@/router'
 
 let mode = $ref('my')
 
@@ -46,16 +53,25 @@ watchEffect(
         }
     })
 )
+
+const completeExchange = errorCatcher(async (exchange) => {
+    const sellGroup = userGroups.find((usrGroup) =>
+        exchange.buyGroups.some(
+            (group) => parseInt(usrGroup.groupId) === group.groupId
+        )
+    )
+
+    throwIf(() => !sellGroup, 400, 'Cannot complete exchange')()
+
+    await enterExchange(sellGroup.groupId, [exchange.sellGroup.groupId])
+
+    router.push('/dashboard')
+})
 </script>
 
 <template>
     <div class="wrapper">
-        <v-sheet
-            v-if="exchanges.length === 0"
-            elevation="2"
-            class="exchange"
-            rounded
-        >
+        <v-sheet elevation="2" class="exchange" rounded>
             <div class="tabs">
                 <v-tabs v-model="mode" color="primary" fixed-tabs>
                     <v-tab value="my">My courses</v-tab>
@@ -87,26 +103,24 @@ watchEffect(
                 </div>
             </v-expand-transition>
         </v-sheet>
+        <v-sheet
+            v-if="exchanges.length === 0"
+            elevation="2"
+            class="exchange"
+            rounded
+        >
+            No matching exchanges. You can create one
+            <router-link to="/createExchange">here</router-link>
+        </v-sheet>
         <v-expand-transition
             v-for="(exchange, index) in exchanges"
             :key="index"
             appear
         >
-            <v-sheet
-                elevation="2"
-                :class="
-                    'exchange ' +
-                    (exchange.complete ? 'exchangeComplete' : 'exchangePending')
-                "
-                rounded
-            >
-                {{ userGroups }}
+            <v-sheet elevation="2" class="exchange" rounded>
                 <h2 style="display: inline">
-                    {{ exchange.sellGroup.courseCode }}
+                    {{ exchange.sellGroup.code }}
                 </h2>
-                <span class="text-subtitle1" style="float: right">{{
-                    exchange.complete ? 'complete' : 'pending'
-                }}</span>
                 <div class="exchangeDetails">
                     <div style="padding: 8px">
                         <span>
@@ -140,6 +154,38 @@ watchEffect(
                         </span>
                     </div>
                 </div>
+                <v-btn
+                    v-if="
+                        userGroups.some((usrGroup) =>
+                            exchange.buyGroups.some(
+                                (group) =>
+                                    parseInt(usrGroup.groupId) === group.groupId
+                            )
+                        )
+                    "
+                    style="margin: 4px"
+                    color="primary"
+                    @click="completeExchange(exchange)"
+                >
+                    Exchange
+                </v-btn>
+                <span
+                    v-else-if="
+                        userGroups.some(
+                            (usrGroup) =>
+                                parseInt(usrGroup.courseId) ===
+                                exchange.sellGroup.courseId
+                        )
+                    "
+                    style="margin: 4px"
+                >
+                    Can't exchange, your are in a group that doesn't match the
+                    request
+                </span>
+                <span v-else style="margin: 4px">
+                    Can't exchange, you need to be in this course. You can join
+                    <router-link to="/myGroups">here</router-link>
+                </span>
             </v-sheet>
         </v-expand-transition>
     </div>
@@ -155,12 +201,6 @@ watchEffect(
     margin-top: 16px;
     margin-bottom: 16px;
     padding: 16px;
-}
-.exchangePending {
-    background-color: lightblue;
-}
-.exchangeComplete {
-    background-color: lightgreen;
 }
 .exchangeDetails {
     display: flex;
