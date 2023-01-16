@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/stores'
 import { throwError } from '@/utils'
 import router from '@/router'
+import { useErrorDisplayStore } from '@/stores'
 
 const address = 'http://localhost:8000/'
 
@@ -14,6 +15,7 @@ const fetchApi = async (endpoint, args) => {
         }
     }
 
+    console.log('Fetching', endpoint, args)
     const res = await fetch(address + endpoint, {
         method: 'post',
         headers: {
@@ -29,14 +31,20 @@ const fetchApi = async (endpoint, args) => {
 
     const data = await res.json().catch(throwError(500, 'JSON Error'))
 
+    console.log('Got', data)
+
     if (data.code !== 200) {
         console.error('api error', data)
         if (data.code === 401) {
             console.info('logging out', data)
-            router.push('/')
+            router.push('/login')
             auth.signOut()
         }
         throw data
+    }
+    if (data.message) {
+        const errorDisplay = useErrorDisplayStore()
+        errorDisplay.setMessage(data)
     }
 
     return data
