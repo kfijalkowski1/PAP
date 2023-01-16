@@ -34,6 +34,7 @@ public class getAllExchanges implements ApiMethodes {
             logger.info("Problem with request");
             return response;
         }
+
         if (forUser) {
             JSONArray userCourses = getUserCourses(login);
             for(int i=0; i < userCourses.length(); i++) {
@@ -61,7 +62,7 @@ public class getAllExchanges implements ApiMethodes {
         String questionString = "(?";
         List<String> listCourses = new ArrayList<String>();
         for(int i=0; i< courses.length(); i++){
-            listCourses.add(courses.getString(i));
+            listCourses.add(Integer.toString(courses.getInt(i)));
         }
         for(int i=1; i< courses.length(); i++){
             questionString += ", ?";
@@ -74,9 +75,9 @@ public class getAllExchanges implements ApiMethodes {
 
 
         String query = "SELECT json_object('sellGroup'          VALUE (SELECT json_object('groupNr'          VALUE group_nr, \n" +
-                "                                                       'groupId'           VALUE group_id,\n" +
                 "                                                       'timeStart'         VALUE time_start,\n" +
                 "                                                       'timeEnd'           value time_end,\n" +
+                "                                                       'groupId'           VALUE group_id,\n" +
                 "                                                       'code'              value c.code,\n" +
                 "                                                       'day'               VALUE day)  \n" +
                 "                                                        from (groups join courses c using(course_id))\n" +
@@ -85,9 +86,9 @@ public class getAllExchanges implements ApiMethodes {
                 "                   'complete'               value CASE WHEN exchanges_sell.COMPLETING_EXCHANGE_ID is null THEN 0 ELSE 1 END,\n" +
                 "                   'buyGroups'           VALUE json_arrayagg(\n" +
                 "                                                    (SELECT json_object('groupNr'          VALUE group_nr, \n" +
-                "                                                       'groupId'           VALUE group_id,\n" +
                 "                                                       'timeStart'         VALUE time_start,\n" +
                 "                                                       'timeEnd'           value time_end,\n" +
+                "                                                       'groupId'           VALUE group_id,\n" +
                 "                                                       'code'              value c.code,\n" +
                 "                                                       'day'               VALUE day)  \n" +
                 "                                                        from (groups join courses c using(course_id))\n" +
