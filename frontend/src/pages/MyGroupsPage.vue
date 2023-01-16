@@ -40,10 +40,10 @@ watchEffect(
             courseOptions = await getCourses(faculty)
         } else {
             courseOptions = []
-            course = null
             groupNrOptions = []
-            groupNr = null
         }
+        course = null
+        groupNr = null
     })
 )
 
@@ -57,8 +57,8 @@ watchEffect(
             )
         } else {
             groupNrOptions = []
-            groupNr = null
         }
+        groupNr = null
     })
 )
 

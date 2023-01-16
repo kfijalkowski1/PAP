@@ -83,9 +83,9 @@ watchEffect(
             classroomOptions = await getClassrooms(props.facultyId)
         } else {
             classroomOptions = []
-            classroom = null
             groupNr = null
         }
+        classroom = null
     })
 )
 </script>

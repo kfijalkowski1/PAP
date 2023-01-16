@@ -35,8 +35,8 @@ watchEffect(
             courseOptions = await getCourses(faculty)
         } else {
             courseOptions = []
-            courses = []
         }
+        courses = []
     })
 )
 

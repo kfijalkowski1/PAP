@@ -20,6 +20,9 @@ const reportIssue = $ref(false)
                 @click="drawer = !drawer"
                 v-if="!lgAndUp"
             />
+            <span style="margin-left: 32px" v-if="auth.isSignedIn">
+                {{ auth.login }}
+            </span>
             <v-spacer />
             <v-btn
                 variant="flat"
