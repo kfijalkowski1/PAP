@@ -1,6 +1,6 @@
 package apiMethods;
 
-import emailHandler.sendEmail;
+import emailHandler.EmailSender;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static jdbc_handler.jdbc_exp.executeQuery;
@@ -96,12 +95,12 @@ public class enterExchange implements ApiMethodes {
             logger.error("Exchange completed");
             try {
                 String login2 = getLogin(exch_res);
-                sendEmail.exchangeConfirm(login2);
+                EmailSender.exchangeConfirm(login2);
             } catch (SQLException e) {
                 logger.info("Strange getting second login exception");
                 logger.info(e);
             }
-            sendEmail.exchangeConfirm(login);
+            EmailSender.exchangeConfirm(login);
 
         } else {
             result.put("code", 200);
