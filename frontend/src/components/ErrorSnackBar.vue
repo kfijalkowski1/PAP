@@ -12,7 +12,7 @@ const type = computed(() => (errorDisplay.code === 200 ? 'info' : 'error'))
     <v-snackbar
         :modelValue="errorDisplay.snackbar"
         @update:modelValue="() => errorDisplay.clearMessage()"
-        :timeout="2000"
+        :timeout="5000"
         :color="type === 'error' ? 'error' : 'primary'"
         variant="elevated"
     >

@@ -187,4 +187,8 @@ watchEffect(
     flex-direction: row;
     min-width: 300px;
 }
+.addButton {
+    margin: 8px;
+    margin-right: 0px;
+}
 </style>

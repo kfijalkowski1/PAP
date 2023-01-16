@@ -129,5 +129,6 @@ const onChangePassword = errorCatcher(async () => {
 .container {
     padding: 32px;
     margin: 16px;
+    min-width: 500px;
 }
 </style>

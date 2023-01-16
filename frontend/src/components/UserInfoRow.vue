@@ -59,6 +59,6 @@ const submit = () => {
 </template>
 <style scoped>
 .textField {
-    min-width: 150px;
+    min-width: 250px;
 }
 </style>
