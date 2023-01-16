@@ -34,7 +34,7 @@ public class sendEmail {
                     }
                 });
 
-        session.setDebug(true);
+//        session.setDebug(true);
         return session;
     }
 
@@ -131,7 +131,7 @@ public class sendEmail {
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
                 message.setSubject("Password changed");
                 String msg = "Hi " + login + ",\n" +
-                        "You have already changed your password.\n" +
+                        "You have successfully changed your password.\n" +
                         "Automatically generated, do not reply.";
                 message.setText(msg);
 
