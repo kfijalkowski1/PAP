@@ -34,14 +34,16 @@ public class sendEmail {
                     }
                 });
 
-        session.setDebug(true);
+//        session.setDebug(true);
         return session;
     }
 
-    public static void registrationConfirm(String login, String email) {
+    public static void registrationConfirm(String login) {
         String from = "pap22zim.z27@gmail.com";
 
-        if (email != null) {
+        String email = getEmail.run(login);
+
+        if (!email.equals("") && !email.equals("null")) {
             try {
                 MimeMessage message = new MimeMessage(prepareSession());
                 message.setFrom(new InternetAddress(from));
@@ -99,7 +101,7 @@ public class sendEmail {
         String from = "pap22zim.z27@gmail.com";
         String email = getEmail.run(login);
 
-        if (!Objects.equals(email, "") && !Objects.equals(email, "null")) {
+        if (!email.equals("") && !email.equals("null")) {
             try {
                 MimeMessage message = new MimeMessage(prepareSession());
                 message.setFrom(new InternetAddress(from));
@@ -124,14 +126,14 @@ public class sendEmail {
         String from = "pap22zim.z27@gmail.com";
         String email = getEmail.run(login);
 
-        if (!Objects.equals(email, "") && !Objects.equals(email, "null")) {
+        if (!email.equals("") && !email.equals("null")) {
             try {
                 MimeMessage message = new MimeMessage(prepareSession());
                 message.setFrom(new InternetAddress(from));
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
                 message.setSubject("Password changed");
                 String msg = "Hi " + login + ",\n" +
-                        "You have already changed your password.\n" +
+                        "You have successfully changed your password.\n" +
                         "Automatically generated, do not reply.";
                 message.setText(msg);
 

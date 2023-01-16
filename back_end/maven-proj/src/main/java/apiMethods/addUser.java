@@ -42,7 +42,7 @@ public class addUser implements ApiMethodes {
         try {
             executeQuery(query1, args);
             logger.info("User added");
-            sendEmail.registrationConfirm(login, email);
+            sendEmail.registrationConfirm(login);
 
             result.put("code", 200);
             result.put("message", "");

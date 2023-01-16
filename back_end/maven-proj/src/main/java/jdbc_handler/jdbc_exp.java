@@ -3,6 +3,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import oracle.jdbc.OracleConnection;
 import oracle.jdbc.pool.*; // import the pool package
 
 import org.apache.logging.log4j.LogManager;
@@ -41,9 +42,13 @@ public class jdbc_exp {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         connConstructor();
-
+        String query = "select column_value from table(?)";
+        Integer[] args2 = {10, 11, 12};
+        String[] columns = {"column_value"};
+        ArrayList<ArrayList<String>> result = getFromArrayQuery(query, args2, columns);
+        System.out.println(result.get(0).get(0));
 }
 
     public static ArrayList<ArrayList<String>> getFromQuery(String QUERY, String[] args, String[] columnLabels) throws SQLException {
@@ -61,6 +66,38 @@ public class jdbc_exp {
             }
             ResultSet rs = pstmt.executeQuery();
             logger.info("JDBC (select) executed query");
+            // Extract data from result set
+            ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+            while (rs.next()) {
+                ArrayList<String> col_result = new ArrayList<String>();
+                for (String colLabel : columnLabels) {
+                    col_result.add(rs.getString(colLabel));
+                }
+                result.add(col_result);
+            }
+            return result;
+        } catch (SQLException e) {
+            logger.error(e);
+            throw e;
+        } finally {
+            conn.close();
+        }
+    }
+
+    public static ArrayList<ArrayList<String>> getFromArrayQuery(String QUERY, Integer[] args, String[] columnLabels) throws SQLException {
+        // gets given query from database
+        // returns array of arrays of strings in same order as columnLabel
+        // arg:
+        // Query = "Select login, token from users where id=?"
+        OracleConnection conn =  null;
+        try {
+            logger.info("JDBC (select array) received query: " + QUERY + " with args: ");
+            conn = (OracleConnection) pds.getConnection();
+            Array array = conn.createOracleArray("ARRAY_OF_NUMBERS", args);
+            PreparedStatement pstmt = conn.prepareStatement(QUERY);
+            pstmt.setArray(1, array);
+            ResultSet rs = pstmt.executeQuery();
+            logger.info("JDBC (select array) executed query");
             // Extract data from result set
             ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
             while (rs.next()) {
@@ -111,6 +148,7 @@ public class jdbc_exp {
             con.close();
         }
     }
+
 
     public static int executeExchangeFunc(int arg1, int arg2) {
         int result=-1;
