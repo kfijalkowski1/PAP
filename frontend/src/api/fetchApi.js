@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/stores'
 import { throwError } from '@/utils'
 import router from '@/router'
+import { useErrorDisplayStore } from '@/stores'
 
 const address = 'http://localhost:8000/'
 
@@ -40,6 +41,10 @@ const fetchApi = async (endpoint, args) => {
             auth.signOut()
         }
         throw data
+    }
+    if (data.message) {
+        const errorDisplay = useErrorDisplayStore()
+        errorDisplay.setMessage(data)
     }
 
     return data

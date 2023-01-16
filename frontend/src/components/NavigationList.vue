@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useAuthStore } from '@/stores'
 import { errorCatcher } from '@/utils'
 import { logout } from '@/api'
+import router from '@/router'
 const auth = useAuthStore()
 
 const links = computed(() =>
@@ -39,6 +40,9 @@ const links = computed(() =>
 
 const clickLogout = errorCatcher(async () => {
     await logout()
+
+    auth.signOut()
+    router.push('/')
 })
 </script>
 <template>

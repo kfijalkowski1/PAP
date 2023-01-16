@@ -5,13 +5,17 @@ import { useErrorDisplayStore } from '@/stores'
 const errorDisplay = useErrorDisplayStore()
 
 const message = computed(() => `${errorDisplay.code}: ${errorDisplay.message}`)
+
+const type = computed(() =>
+    errorDisplay.message.code === 200 ? 'info' : 'error'
+)
 </script>
 <template>
     <v-snackbar
         :modelValue="errorDisplay.snackbar"
         @update:modelValue="() => errorDisplay.clearMessage()"
         :timeout="2000"
-        color="error"
+        :color="type === 'error' ? 'error' : 'primary'"
         variant="elevated"
     >
         {{ message }}

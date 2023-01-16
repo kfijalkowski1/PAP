@@ -126,24 +126,28 @@ const checkKey = (event) => {
                     />
                 </v-expand-transition>
 
-                <v-btn
-                    v-if="mode === 'login'"
-                    variant="flat"
-                    color="primary"
-                    class="button"
-                    @click="onLogin"
-                >
-                    Login
-                </v-btn>
-                <v-btn
-                    v-if="mode === 'register'"
-                    variant="flat"
-                    color="primary"
-                    class="button"
-                    @click="onRegister"
-                >
-                    Register
-                </v-btn>
+                <v-expand-transition>
+                    <div v-if="mode === 'login'">
+                        <v-btn
+                            variant="flat"
+                            color="primary"
+                            class="button"
+                            @click="onLogin"
+                        >
+                            Login
+                        </v-btn>
+                    </div>
+                    <div v-if="mode === 'register'">
+                        <v-btn
+                            variant="flat"
+                            color="primary"
+                            class="button"
+                            @click="onRegister"
+                        >
+                            Register
+                        </v-btn>
+                    </div>
+                </v-expand-transition>
             </v-sheet>
         </div>
     </div>

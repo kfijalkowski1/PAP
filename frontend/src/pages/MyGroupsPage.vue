@@ -50,7 +50,11 @@ watchEffect(
 watchEffect(
     errorCatcher(async () => {
         if (course) {
-            groupNrOptions = await getGroups(course)
+            groupNrOptions = await getGroups(course).filter((group) =>
+                userGroups.every(
+                    (usrGroup) => group.groupId !== usrGroup.groupId
+                )
+            )
         } else {
             groupNrOptions = []
             groupNr = null
@@ -153,7 +157,13 @@ const joinGroup = errorCatcher(async () => {
                 <AddGroupNrDialog
                     v-model="addGroupNrDialog"
                     @setNewValue="groupNr = $event"
-                    @setNewOptions="groupNrOptions = $event"
+                    @setNewOptions="
+                        groupNrOptions = $event.filter((group) =>
+                            userGroups.every(
+                                (usrGroup) => group.groupId !== usrGroup.groupId
+                            )
+                        )
+                    "
                     :courseId="course"
                     :facultyId="faculty"
                 />
