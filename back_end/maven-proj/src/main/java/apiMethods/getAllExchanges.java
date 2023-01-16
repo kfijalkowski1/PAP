@@ -39,7 +39,7 @@ public class getAllExchanges implements ApiMethodes {
             }
         }
 
-        if (courses.length() == 0) {
+        if (courses.length() == 0 && facultyId != -1) {
             JSONObject courseReq = null;
             courseReq.put("facultyId", facultyId);
             getCourses crs = new getCourses();
@@ -56,7 +56,7 @@ public class getAllExchanges implements ApiMethodes {
 
 
 
-        String query = "SELECT json_object('sell_group_id'          VALUE (SELECT json_object('groupNr'          VALUE group_nr, \n" +
+        String query = "SELECT json_object('sellGroup'          VALUE (SELECT json_object('groupNr'          VALUE group_nr, \n" +
                 "                                                       'timeStart'         VALUE time_start,\n" +
                 "                                                       'timeEnd'           value time_end,\n" +
                 "                                                       'code'              value c.code,\n" +
@@ -65,7 +65,7 @@ public class getAllExchanges implements ApiMethodes {
                 "                                                        where group_id = ug.group_id), \n" +
                 "                   'insertionDate'          VALUE exchanges_sell.INSERTION_DATE,\n" +
                 "                   'complete'               value CASE WHEN exchanges_sell.COMPLETING_EXCHANGE_ID is null THEN 0 ELSE 1 END,\n" +
-                "                   'buy_group_id'           VALUE json_arrayagg(\n" +
+                "                   'buyGroups'           VALUE json_arrayagg(\n" +
                 "                                                    (SELECT json_object('groupNr'          VALUE group_nr, \n" +
                 "                                                       'timeStart'         VALUE time_start,\n" +
                 "                                                       'timeEnd'           value time_end,\n" +
@@ -75,10 +75,10 @@ public class getAllExchanges implements ApiMethodes {
                 "                                                        where group_id = exchanges_buy.group_id)\n" +
                 "                                                    ORDER BY exchanges_buy.group_id)) as a\n" +
                 "  from (((exchanges_sell join user_groups ug using(ug_id)) join exchanges_buy using(exchange_sell_id))) join groups g on(ug.group_id = g.group_id)\n" +
-                "  WHERE g.course_id in ? and (exchanges_sell.COMPLETING_EXCHANGE_ID is null)\n" +
+                "  WHERE g.course_id in " + strCourses + " and (exchanges_sell.COMPLETING_EXCHANGE_ID is null)\n" +
                 "  GROUP BY ug.group_id, exchanges_sell.INSERTION_DATE, exchanges_sell.COMPLETING_EXCHANGE_ID";
         String[] columns = {"a"};
-        String[] args = {strCourses};
+        String[] args = {};
         ArrayList<ArrayList<String>> result;
 
         try {
@@ -100,10 +100,10 @@ public class getAllExchanges implements ApiMethodes {
     }
 
     JSONArray getUserCourses(String login){
-        String query = "select c.code\n" +
+        String query = "select course_id\n" +
                 "from ((groups join courses c using(COURSE_ID)) join user_groups using(group_id))\n" +
                 "where login = ? and is_current=1";
-        String[] columns = {"code"};
+        String[] columns = {"course_id"};
         String[] args = {login};
         ArrayList<ArrayList<String>> result;
         JSONArray courses = new JSONArray();
