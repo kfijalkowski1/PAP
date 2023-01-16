@@ -1,4 +1,4 @@
-package apiMethodes;
+package apiMethods;
 import org.json.JSONObject;
 
 public interface ApiMethodes {

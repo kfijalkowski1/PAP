@@ -1,7 +1,6 @@
 # PAP22L-Z27
 
 
-
 ## Members
 
 - Krzysztof Fijałkowski
@@ -11,16 +10,30 @@
 
 ## Decription
 The project idea is to create a student-friendly platform for exchanging terms of classes.
-#### Basic functionalities:
+
+#### Link to API documentation
+https://hackmd.io/@gambolkf/rkoV65Ocs
+
+#### Functionalities:
 - place your exchange offer on the market
 - choose an exchange offer from the market
-#### Expanded functionalities:
-- see your updated plan
-- automatic email communication between users
-- automatic email communication between the user and the professor
-- automatic recommended exchanges
+- add new course/lecturer/group/classroom
+- registration with password hashing
+- login by session validated with tokens
+- history of user's exchanges
+- possibility of changing password
+- automatic email notifications (registration, exchange, password change)
+- sending e-mail by user to report a problem (with a log file in attachment)
+- possibility to change user's account details
+
+#### Features:
+- server from scratch
+- multi-threaded server
+- sql-injection protection
+- pooling connections to the database (much better efficiency)
+- clientside rendering
 
 ## Technologies
 - Java
 - Oracle DB
-- Vuejs
+- Vue.js

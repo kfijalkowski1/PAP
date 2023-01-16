@@ -1,4 +1,4 @@
-package apiMethodes;
+package apiMethods;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,23 +13,24 @@ import static jdbc_handler.jdbc_exp.getFromQuery;
 public class Users implements ApiMethodes {
     private static final Logger logger = LogManager.getLogger(Users.class);
     public JSONObject run(JSONObject request) {
-        logger.info("Geting all users");
+        logger.info("Getting all users");
         JSONObject response = new JSONObject();
         String query = "SELECT * FROM users";
-        String[] columns = {"user_id", "login"};
+        String[] columns = {"login"};
+        String[] args = {};
         ArrayList<ArrayList<String>> result;
 
         try {
-            result = getFromQuery(query, columns);
+            result = getFromQuery(query, args, columns);
             JSONArray resultUsers = new JSONArray();
 
             for (ArrayList<String> record : result) {
                 JSONObject user = new JSONObject()
-                        .put("user_id", record.get(0))
-                        .put("login", record.get(1));
+                        .put("login", record.get(0));
                 resultUsers.put(user);
             }
             response.put("users", resultUsers);
+            response.put("code", 200);
 
         } catch (SQLException e) {
             System.out.println("Problem with database");

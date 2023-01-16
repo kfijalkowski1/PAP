@@ -1,7 +1,8 @@
-package apiMethodes;
+package apiMethods;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.SecureRandom;
@@ -11,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 
-import static hashingHandler.PasswordHashing.generateHash;
 import static hashingHandler.PasswordHashing.validatePassword;
 import static jdbc_handler.jdbc_exp.executeQuery;
 import static jdbc_handler.jdbc_exp.getFromQuery;
@@ -22,31 +22,49 @@ public class authenticateUser implements ApiMethodes {
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
     public JSONObject run (JSONObject request) {
-        String login = request.getString("login");
-        String password = request.getString("password");
-
         JSONObject result = new JSONObject();
+        String password;
+        String login;
+        try {
+            login = request.getString("login");
+            password = request.getString("password");
+        } catch (JSONException e) {
+            result.put("code", 400);
+            result.put("message", "wrong request");
+            return result;
+        }
+
         boolean isValid = false;
         logger.info("Try to validate user: " + login);
         try {
-            String query = "SELECT passwd_hash FROM USERS WHERE login='" + login + "'";
+            String query = "SELECT passwd_hash FROM USERS WHERE login= ?";
             String[] columns = {"passwd_hash"};
-            ArrayList<ArrayList<String>> queryResult = getFromQuery(query, columns);
+            String[] args = {login};
+            ArrayList<ArrayList<String>> queryResult = getFromQuery(query, args, columns);
+            if (queryResult.size() == 0){
+                result.put("code", 400);
+                result.put("message", "incorrect password or login");
+                return result;
+            }
             if (validatePassword(password, queryResult.get(0).get(0))) {
                 logger.info("Correct logging for user: " + login);
                 isValid = true;
 
                 String token = generateNewToken();
                 result.put("token", token);
-
-                String user_id = getUserID(login);
-                createNewSession(user_id, token);
+                createNewSession(login, token);
             }
         } catch (SQLException e) {
             isValid = false;
         }
+        if (isValid) {
+            result.put("code", 200);
+            result.put("message", "");
+        } else {
+            result.put("code", 400);
+            result.put("message", "incorrect password or login");
+        }
 
-        result.put("valid", isValid);
         return result;
     }
 
@@ -56,36 +74,22 @@ public class authenticateUser implements ApiMethodes {
         return base64Encoder.encodeToString(randomBytes);
     }
 
-    public static void createNewSession(String user_id, String token) {
+    public static void createNewSession(String login, String token) {
         String expiration_time = getExpirationTime();
-        String query = "INSERT INTO sessions values (null, '" +
-                user_id + "', '" +
-                token + "', '" +
-                "to_date('" + expiration_time + "', 'YYYY/MM/DD HH24:MI:SS'))";
-
+        String query = "INSERT INTO sessions (TOKEN, LOGIN, EXPIRATION_TIME) values (?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'))";
+        String args[] = {token, login, expiration_time};
         try {
-            executeQuery(query);
-            logger.info("Session started for user: " + user_id);
+            executeQuery(query, args);
+            logger.info("Session started for user: " + login);
         } catch (SQLException e) {
+            logger.error(e);
             logger.error("Problem with database");
         }
     }
 
-    public static String getUserID(String login) {
-        String user_id = "";
-        try {
-            String query = "SELECT user_id FROM users WHERE login='" + login + "'";
-            String[] columns = {"user_id"};
-            ArrayList<ArrayList<String>> queryResult = getFromQuery(query, columns);
-            user_id = queryResult.get(0).get(0);
-        } catch (SQLException e) {
-            logger.info("No such User in DB: " + login);
-        }
-        return user_id;
-    }
 
     public static String getExpirationTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(40);
         return expirationTime.format(formatter);
     }
