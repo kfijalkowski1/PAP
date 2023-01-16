@@ -1,6 +1,6 @@
 package apiMethods;
 
-import emailHandler.sendEmail;
+import emailHandler.EmailSender;
 import org.json.JSONObject;
 
 
@@ -12,7 +12,7 @@ public class userReport implements ApiMethodes {
 
         JSONObject result = new JSONObject();
 
-        sendEmail.sendReportLog(login, userMessage);
+        EmailSender.sendReportLog(login, userMessage);
 
         result.put("code", 200);
         result.put("message", "Report sent");

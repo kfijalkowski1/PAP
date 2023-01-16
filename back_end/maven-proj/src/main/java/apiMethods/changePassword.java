@@ -1,6 +1,6 @@
 package apiMethods;
 
-import emailHandler.sendEmail;
+import emailHandler.EmailSender;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
@@ -43,7 +43,7 @@ public class changePassword implements ApiMethodes {
                 result.put("code", 200);
                 result.put("message", "");
 
-                sendEmail.passwordChangeConfirm(login);
+                EmailSender.passwordChangeConfirm(login);
 
             } catch (SQLException e) {
                 logger.error("Problem with database");
