@@ -21,10 +21,9 @@ https://hackmd.io/@gambolkf/rkoV65Ocs
 - registration with password hashing
 - login by session validated with tokens
 - history of user's exchanges
-- possibility of changing password
-- automatic email notifications (registration, exchange, password change)
+- ability to change password
 - sending e-mail by user to report a problem (with a log file in attachment)
-- possibility to change user's account details
+- ability to change user's account details
 
 #### Features:
 - server from scratch
@@ -32,6 +31,9 @@ https://hackmd.io/@gambolkf/rkoV65Ocs
 - sql-injection protection
 - pooling connections to the database (much better efficiency)
 - clientside rendering
+- robust API, protected against malicious requests (eg: unauthorised request, invalid data)
+- automatic email notifications (registration, exchange, password change)
+- multi-threaded background operations eg: sending emails
 
 ## Technologies
 - Java
