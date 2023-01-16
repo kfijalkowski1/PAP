@@ -1,4 +1,4 @@
-package apiMethodes;
+package apiMethods;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 
-import static hashingHandler.PasswordHashing.generateHash;
 import static hashingHandler.PasswordHashing.validatePassword;
 import static jdbc_handler.jdbc_exp.executeQuery;
 import static jdbc_handler.jdbc_exp.getFromQuery;
@@ -42,6 +41,11 @@ public class authenticateUser implements ApiMethodes {
             String[] columns = {"passwd_hash"};
             String[] args = {login};
             ArrayList<ArrayList<String>> queryResult = getFromQuery(query, args, columns);
+            if (queryResult.size() == 0){
+                result.put("code", 400);
+                result.put("message", "incorrect password or login");
+                return result;
+            }
             if (validatePassword(password, queryResult.get(0).get(0))) {
                 logger.info("Correct logging for user: " + login);
                 isValid = true;
@@ -57,7 +61,7 @@ public class authenticateUser implements ApiMethodes {
             result.put("code", 200);
             result.put("message", "");
         } else {
-            result.put("code", 401);
+            result.put("code", 400);
             result.put("message", "incorrect password or login");
         }
 

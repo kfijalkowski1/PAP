@@ -1,6 +1,6 @@
 package http_server;
 
-import apiMethodes.*;
+import apiMethods.*;
 import com.sun.net.httpserver.HttpExchange;
 import org.json.JSONObject;
 import java.io.*;
@@ -29,7 +29,6 @@ public class ApiRequestHandler {
         methods.put("/addGroup", new addGroup());
         methods.put("/addClassroom", new addClassroom());
         methods.put("/addCourse", new addCourse());
-        methods.put("/addLecturer", new addLecturer());
         methods.put("/getCourseTypes", new getCourseTypes());
         methods.put("/getFaculties", new getFaculties());
         methods.put("/getLecturerDegrees", new getLecturerDegrees());
@@ -43,6 +42,9 @@ public class ApiRequestHandler {
         methods.put("/addUserGroup", new addUserGroup());
         methods.put("/getGroups", new getGroups());
         methods.put("/getUserGroups", new getUserGroups());
+        methods.put("/userReport", new userReport());
+        methods.put("/logout", new logout());
+        methods.put("/getAllExchanges", new getAllExchanges());
     }
 
     public String parseInputRequest(HttpExchange t) throws IOException {

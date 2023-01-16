@@ -1,4 +1,4 @@
-package apiMethodes;
+package apiMethods;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -6,19 +6,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
-import java.util.jar.JarException;
 
 import static jdbc_handler.jdbc_exp.executeQuery;
 
-public class addEmail implements ApiMethodes {
-    private static final Logger logger = LogManager.getLogger(addEmail.class);
+public class addSurname implements ApiMethodes {
+    private static final Logger logger = LogManager.getLogger(addSurname.class);
     public JSONObject run(JSONObject request) {
-        ;
         JSONObject result = new JSONObject();
-        String e_mail;
+        String name;
         String login;
         try {
-            e_mail = request.getString("email");
+            name = request.getString("surname");
             login = request.getString("login");
         } catch (JSONException e) {
             logger.error(e);
@@ -27,8 +25,8 @@ public class addEmail implements ApiMethodes {
             return result;
         }
 
-        String query = "UPDATE USERS SET email = ? where login = ?";
-        String[] args = {e_mail, login};
+        String query = "UPDATE USERS SET surname = ? where login = ?";
+        String[] args = {name, login};
         try {
             executeQuery(query, args);
             result.put("code", 200);

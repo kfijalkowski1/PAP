@@ -1,5 +1,6 @@
-package apiMethodes;
+package apiMethods;
 
+import emailHandler.sendEmail;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -7,14 +8,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static jdbc_handler.jdbc_exp.executeQuery;
 import static jdbc_handler.jdbc_exp.getFromQuery;
+import static jdbc_handler.jdbc_exp.executeExchangeFunc;
 
 public class enterExchange implements ApiMethodes {
     public static void main(String[] args) {
@@ -34,19 +34,23 @@ public class enterExchange implements ApiMethodes {
     private static final Logger logger = LogManager.getLogger(enterExchange.class);
     public JSONObject run(JSONObject request) {
         JSONObject result = new JSONObject();
-        String login = request.getString("login");
-        int sell_group_id = request.getInt("sellGroupId");
-        JSONArray buyGroups = request.getJSONArray("buyGroupIds");
-        String ug_id;
-
+        String login = null;
+        String temp_id=null;
+        int sell_group_id=-1;
+        JSONArray buyGroups=null;
         try {
-            ug_id = getUserGroupId(login, sell_group_id);
+            login = request.getString("login");
+            temp_id = request.getString("sellGroupId");
+            buyGroups = request.getJSONArray("buyGroupIds");
         } catch (JSONException e) {
             result.put("code", 400);
             result.put("message", "wrong request");
             return result;
         }
-        String insertion_date = getCurrentDate();
+        String ug_id;
+        sell_group_id = Integer.parseInt(temp_id);
+
+        ug_id = getUserGroupId(login, sell_group_id);
 
         if (Objects.equals(ug_id, "error")) {
             result.put("code", 500);
@@ -58,7 +62,7 @@ public class enterExchange implements ApiMethodes {
             String[] args = {ug_id};
             executeQuery(query, args);
 
-            String exchange_sell_id = getExchangeSellId(ug_id, insertion_date);
+            String exchange_sell_id = getExchangeSellId(ug_id);
             if (exchange_sell_id.equals("error")) {
                 result.put("code", 500);
                 return result;
@@ -78,28 +82,54 @@ public class enterExchange implements ApiMethodes {
             String[] args2 = list.toArray(new String[0]);
             executeQuery(query1, args2);
 
-            result.put("code", 200);
-            logger.info("New exchange added.");
+
+
         } catch (SQLException e) {
             result.put("code", 500);
             logger.error("Problem with database");
         }
 
-        // complete exchange if it is possible
+        int exch_res=0;
+        for (int i = 0; i < buyGroups.length(); ++i) {
+            int group_id = buyGroups.getInt(i);
+            logger.info("executing exchange for" + ug_id + " " + Integer.toString(group_id));
+            exch_res = executeExchangeFunc(Integer.parseInt(ug_id), group_id);
+            if (exch_res == 1) { break;}
+        }
 
 
-        boolean isDone = completeExchange(sell_group_id, buyGroups);
-        if (isDone) {
-//            oznacz dodane przed chwilą jako completed
+        if (exch_res != 0) {
             result.put("code", 200);
             result.put("message", "Exchange completed");
             logger.error("Exchange completed");
+            try {
+                String login2 = getLogin(exch_res);
+                sendEmail.exchangeConfirm(login2);
+            } catch (SQLException e) {
+                logger.info("Strange getting second login exception");
+                logger.info(e);
+            }
+            sendEmail.exchangeConfirm(login);
+
+        } else {
+            result.put("code", 200);
+            result.put("message", "Exchange not completed " + Integer.toString(exch_res));
+            logger.error("Exchange not completed");
         }
         return result;
     }
-    public boolean completeExchange(int sell_group_id, JSONArray buyGroups) {
-        return true;
+
+    public String getLogin(int ug_id) throws SQLException {
+        String query = "Select login from user_groups where ug_id=?";
+        String[] columns = {"login"};
+        String[] args = {Integer.toString(ug_id)};
+        ArrayList<ArrayList<String>> queryResult = getFromQuery(query, args, columns);
+        if (queryResult.size() == 0) {throw new SQLException(); }
+        String login = queryResult.get(0).get(0);
+        logger.info("Checked login of user: " + login);
+        return login;
     }
+
     public String getUserGroupId(String login, int group_id) {
         try {
             String query = "Select ug_id from user_groups where login= ? and group_id= ?";
@@ -112,20 +142,15 @@ public class enterExchange implements ApiMethodes {
             return "error";
         }
     }
-    public String getExchangeSellId(String ug_id, String insertion_date) {
+    public String getExchangeSellId(String ug_id) {
         try {
-            String query = "Select exchange_sell_id from exchanges_sell where ug_id= ? and insertion_date= ?";
+            String query = "Select exchange_sell_id from exchanges_sell where ug_id= ?";
             String[] columns = {"exchange_sell_id"};
-            String[] args = {ug_id, insertion_date};
+            String[] args = {ug_id};
             ArrayList<ArrayList<String>> queryResult = getFromQuery(query, args, columns);
             return queryResult.get(0).get(0);
         } catch (SQLException e) {
             return "error";
         }
-    }
-    public String getCurrentDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        LocalDateTime currentDate = LocalDateTime.now();
-        return currentDate.format(formatter);
     }
 }
